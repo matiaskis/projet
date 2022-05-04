@@ -4,7 +4,7 @@
 
 int choose(char **choice){
  while (*choice[3]!=*compression && *choice[3]!=*decompression) { 
-    printf("Vous n'avez pas corectement écrit compression ou decompression \n");
+    printf("Vous n'avez pas correctement écrit compression ou decompression \n");
     printf("veuillez resaisir l'action voulu");
     scanf("%s", choice[3]);
 }
