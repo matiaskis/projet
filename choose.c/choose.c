@@ -1,6 +1,7 @@
+#include<choose.h>
 #define char *compression = compression
 #define char *decompression = decompression
-#include <stdio.h>
+
 int choose(char **choice){
  while (*choice[3]!=*compression && *choice[3]!=*decompression) { 
     printf("Vous n'avez pas corectement écrit compression ou decompression \n");
@@ -8,9 +9,9 @@ int choose(char **choice){
     scanf("%s", choice[3]);
 }
 if (choice[3]=*compression){
-return (1);
+  return (1);
 }
 else {
-return (2);    
+  return (2);    
 }
-
+}
