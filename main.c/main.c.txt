@@ -1,4 +1,0 @@
-int main(int argc, char ** argv){
-int choose=choose(argv);
-return 0;
-}
