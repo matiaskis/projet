@@ -6,16 +6,16 @@
     #include <time.h>
 
 /*!
-     * @brief this function calculate the execution time of the program.
+     * @brief this function calculate the execution time of the program and display it.
      *
      * @param time_1 first measured time value.
      * @param time_2 second measured time value.
-     * @return  the execution time of the program.
+     * @return  nothing.
      */
-float execution_time(clock_t time_1,clock_t time_2);
+void execution_time(clock_t time_1,clock_t time_2);
 
 /*!
-     * @brief this function is used to get the time value.
+     * @brief this function is used to get the curent time value.
      *
      * @param none
      * @return  the current time.
