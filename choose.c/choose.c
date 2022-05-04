@@ -1,6 +1,4 @@
 #include<choose.h>
-#define char *compression = compression
-#define char *decompression = decompression
 
 int choose(char **choice){
  while (*choice[3]!=*compression && *choice[3]!=*decompression) { 
