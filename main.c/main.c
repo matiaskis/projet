@@ -9,6 +9,6 @@ int main(int argc, char ** argv){
   
   
   time_end=get_time();
-  execution_time();
+  execution_time(time_start,time_end);
   return 0;
 }
