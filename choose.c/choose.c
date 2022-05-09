@@ -1,12 +1,15 @@
 #include<choose.h>
 
-int choose(char **choice){
- while (*choice[3]!=*compression && *choice[3]!=*decompression) { 
-    printf("Vous n'avez pas correctement écrit compression ou decompression \n");
-    printf("veuillez resaisir l'action voulu");
-    scanf("%s", choice[3]);
-}
-if (choice[3]=*compression){
+int choose(){
+ int choice;
+ printf("to compress enter 1, to compress back enter 2");
+ scanf("%d", &choice);
+ while(choice!=1 && choice!=2){
+  printf("can you choose your use");
+  printf("to compress enter 1, to compress back enter 2");
+ }
+ if(choice==1){
+
   return (1);
 }
 else {
