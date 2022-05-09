@@ -11,6 +11,6 @@ int test(int progression){
             printf(" ");
             }
     printf("|");
-    printf("\n-------\n") 
+    printf("\n-------\n");
 }
 
