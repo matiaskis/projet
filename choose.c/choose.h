@@ -3,7 +3,7 @@
     #include <stdio.h>
   
 /*!
-     * @brief this function allows the user to choose the operating mode of the program(compression/decompression).
+     * @brief this function allows the user to choose the operating mode of the program(zip/unzip).
      * @param none.
      * @return  integer value used in the main to choose the operating mode.
      */
