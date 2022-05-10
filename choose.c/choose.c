@@ -5,7 +5,7 @@ int choose(){
  printf("to compress enter 1, to compress back enter 2");
  scanf("%d", &choice);
  while(choice!=1 && choice!=2){
-  printf("can you choose your use");
+  printf("please use a valid argument");
   printf("to compress enter 1, to compress back enter 2");
  }
  if(choice==1){
