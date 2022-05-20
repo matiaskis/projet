@@ -2,7 +2,7 @@
 #include "ppm_lib.h"
 #include "zip.h"
 
-void zip(char **path){// getcolor à faire
+void zip(char **path){// getcolor à faire et fclose
 
 
 
@@ -66,7 +66,7 @@ fwrite(&blue_byte,sizeof(unsigned char ),1,zipped);
 
 
 
-int index;
+unsigned char index;
 index=(3*red(last_pixel_value)+5*green(last_pixel_value)+7*blue(last_pixel_value))%64;
 cache[index]=last_pixel_value;//enregistrement premier pixel dans le cache
 
