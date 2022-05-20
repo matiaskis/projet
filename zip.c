@@ -2,7 +2,7 @@
 #include "ppm_lib.h"
 #include "zip.h"
 
-void zip(char **path){
+void zip(char **path){// getcolor à faire
 
 
 
