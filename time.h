@@ -3,7 +3,7 @@
 
 
     #include <stdio.h>
-    #include <time.h>
+    #include "time.h"
 
 /*!
      * @brief this function calculate the execution time of the program and display it.
