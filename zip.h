@@ -29,7 +29,7 @@
      * @param pixel_value           integer value of the current pixel                   
      * @return                      nothing
      */
-    void block_index(unsigned char cache[],int pixel value);
+    void block_index(unsigned char cache[],int pixel_value);
 
      /*!
      * @brief                       this function calculate the difference between the previous pixel value and the current pixel value 
