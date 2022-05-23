@@ -8,22 +8,22 @@ void block_same(int* pi,int* pj,int pixel_value,int previous_pixel_value,int wid
     *pj=*pj+1;
 	counter++;
 	while(previous_pixel_value==pixel_value && *pj<width){
+		while(previous_pixel_value==pixel_value && *pj<width && counter < 62){
 			pixel_value=ppmRead(img_entree,*pj,*pi);
 			 *pj=*pj+1;
 			counter++;//counts the number of successive same pixel
-            		
-	}
-	
-//when j is equal to width it check the last pixel	
-	if(previous_pixel_value!=pixel_value){
-		counter--;
+            		}
+//when j is equal to width it check the last pixel		
+		if(previous_pixel_value!=pixel_value &&	*pj==width){
+			counter--;
 		}
-	
-	counter=significant_bit_same+counter-1; 	
-	fwrite(&counter,sizeof(unsigned char),1,zipped);
-	counter=0;
+		printf("%u ", counter);
+		counter=significant_bit_same+counter-1;
+		fwrite(&counter,sizeof(unsigned char),1,zipped);
+		counter=0;
 	}
-	
+	}
+
 void block_index(unsigned char index,FILE *zipped){
 			fwrite(&index,sizeof(unsigned char),1,zipped);
 			
@@ -124,10 +124,6 @@ for (i=0;i<height;i++){
         		block_same(pi,pj,pixel_value,previous_pixel_value,width,img_entree,zipped);
        		}
 		
-//check if j go out of the picture
-		if (j>=width ){
-		break;
-		}
 //calculate diff
 		diff_red=(red(pixel_value)-red(previous_pixel_value));
        		diff_green=(green(pixel_value)-green(previous_pixel_value));
