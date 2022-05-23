@@ -1,6 +1,7 @@
 #ifndef ZIP_H
     #define ZIP_H
     #include<stdio.h>
+    #include"ppm_lib.h"
     
     
     #define significant_bit_same 192
