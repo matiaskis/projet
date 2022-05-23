@@ -1,3 +1,5 @@
+
+   
 #include "ppm_lib.h"
 #include "zip.h"
 
@@ -11,6 +13,7 @@ void block_same(int* pi,int* pj,int pixel_value,int previous_pixel_value,int wid
 			counter++;//counts the number of successive same pixel
             		
 	}
+	printf("%u ",counter);
 //when j is equal to width it check the last pixel	
 	if(previous_pixel_value!=pixel_value){
 		counter--;
@@ -21,7 +24,7 @@ void block_same(int* pi,int* pj,int pixel_value,int previous_pixel_value,int wid
 	counter=0;
 	}
 	
-void block_index(unsigned char cache[],int pixel_value,FILE *zipped){
+void block_index(unsigned char index,FILE *zipped){
 			fwrite(&index,sizeof(unsigned char),1,zipped);
 			
     }	
@@ -88,11 +91,11 @@ int* pi; int* pj;
 pi=&i;
 pj=&j;
 int previous_pixel_value, pixel_value;
-unsigned char red_byte=red(previous_pixel_value),green_byte=green(previous_pixel_value),blue_byte=blue(previous_pixel_value);
 unsigned char cache[64]={0};
 unsigned char block_rgb_bit=significant_bit_rgb;
 
 previous_pixel_value=ppmRead(img_entree,0,0);
+unsigned char red_byte=red(previous_pixel_value),green_byte=green(previous_pixel_value),blue_byte=blue(previous_pixel_value);
 
 fwrite(&block_rgb_bit,sizeof(unsigned char),1,zipped);
 fwrite(&red_byte,sizeof(unsigned char),1,zipped);
@@ -132,7 +135,7 @@ for (i=0;i<height;i++){
 //block_index
 		index=(3*red(pixel_value)+5*green(pixel_value)+7*blue(pixel_value))%64;
 		if(cache[index]!=0){
-			block_index(cache,pixel_value,zipped);
+			block_index(index,zipped);
 		}
         
 //block_diff 
