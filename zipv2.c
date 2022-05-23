@@ -28,8 +28,8 @@ void block_index(unsigned char cache[],int pixel_value,FILE *zipped){
 
 void block_diff(unsigned char diff_red,unsigned char diff_green,unsigned char diff_blue,FILE *zipped){       
             diff_red=diff_red+2;
-            diff_green=diff_green*4;
-            diff_blue=diff_blue*16;
+            diff_green=(diff_green+2)*4;
+            diff_blue=(diff_blue+2)*16;
 	    unsigned char diff_total=significant_bit_diff+diff_red+diff_blue+diff_green;
 	    fwrite(&diff_total,sizeof(unsigned char),1,zipped);
     }
