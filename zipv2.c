@@ -86,7 +86,7 @@ int i, j;
 int* pi,* pj;
 pi=&i;pj=&j;
 int previous_pixel_value, pixel_value;
-unsigned char red_byte=red(previous_pixel_value);,green_byte=green(previous_pixel_value);,blue_byte=blue(previous_pixel_value);
+unsigned char red_byte=red(previous_pixel_value);green_byte=green(previous_pixel_value);blue_byte=blue(previous_pixel_value);
 unsigned char cache[64]={0};
 unsigned char block_rgb=significant_bit_rgb;
 
@@ -113,9 +113,6 @@ for (i=0;i<height;i++){
 		}
 		
 		pixel_value=ppmRead(img_entree,j,i);
-		diff_red=(red(pixel_value)-red(previous_pixel_value));
-       		diff_green=(green(pixel_value)-green(previous_pixel_value));
-        	diff_blue=(blue(pixel_value)-blue(previous_pixel_value));
 		
 //block_same
 		if(previous_pixel_value==pixel_value){
@@ -126,6 +123,10 @@ for (i=0;i<height;i++){
 		if (j>=width){
 		break;
 		}
+//calculate diff
+		diff_red=(red(pixel_value)-red(previous_pixel_value));
+       		diff_green=(green(pixel_value)-green(previous_pixel_value));
+        	diff_blue=(blue(pixel_value)-blue(previous_pixel_value));
 //block_index
 		index=(3*red(pixel_value)+5*green(pixel_value)+7*blue(pixel_value))%64;
 		if(cache[index]!=0){
