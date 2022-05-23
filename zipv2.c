@@ -21,7 +21,7 @@ void block_same(int* pi,int* pj,int pixel_value,int previous_pixel_value,int wid
 	counter=0;
 	}
 	
-void block_index(unsigned char cache[],int pixel value,FILE *zipped){
+void block_index(unsigned char cache[],int pixel_value,FILE *zipped){
 			fwrite(&index,sizeof(unsigned char),1,zipped);
 			
     }	
@@ -116,7 +116,7 @@ for (i=0;i<height;i++){
 		
 //block_same
 		if(previous_pixel_value==pixel_value){
-        		block_same(int* pi,int* pj,pixel_value,previous_pixel_value);
+        		block_same(pi,pj,pixel_value,previous_pixel_value,width,image_entree,zipped);
        		}
 		
 //check if j go out of the picture
@@ -130,22 +130,22 @@ for (i=0;i<height;i++){
 //block_index
 		index=(3*red(pixel_value)+5*green(pixel_value)+7*blue(pixel_value))%64;
 		if(cache[index]!=0){
-			block_index(cache,pixel_value);
+			block_index(cache,pixel_value,zipped);
 		}
         
 //block_diff 
 		else if( diff_red>=(-2) && diff_red<=1 && diff_green>=(-2) && diff_green<=1 && diff_blue>=(-2) && diff_blue<=1 ){
-            		block_diff(diff_red,diff_green,diff_blue);    
+            		block_diff(diff_red,diff_green,diff_blue,zipped);    
         	}		
 
 //block_luma
         	else if(diff_green>=(-32) && diff_green<=31 && diff_red-diff_green >= (-8) && dif_red-diff_green <=7 && diff_blue-diff_green >= (-8) && diff_blue-diff_green<=7){
-	        	block_luma(diff_red,diff_green,diff_blue);
+	        	block_luma(diff_red,diff_green,diff_blue,zipped);
         	}
 
 //block_rgb
         	else{
-            		block_rgb(pixel_value);
+            		block_rgb(pixel_value,zipped);
         	}
 //index save
 	    	if(cache[index]==0){
