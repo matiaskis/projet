@@ -5,24 +5,25 @@ void block_same(int* pi,int* pj,int pixel_value,int previous_pixel_value){
     unsigned char counter;
     *pj++;
 	counter++;
-	while(previous_pixel_value==pixel_value){
+	while(previous_pixel_value==pixel_value && *pj<width){
 			pixel_value==ppmRead(img_entree,j,i);
 			*pj++;
 			counter++;//counts the number of successive same pixel
-            		if (*pj>=width){
-		        	break;
-		   	}
+            		
 	}
+//when j is equal to width it check the last pixel	
+	if(previous_pixel_value!=pixel_value){
+		counter--;
+		}
+	
 	counter=significant_bit_same+counter-1; 	
 	fwrite(&counter,sizeof(unsigned char),1,zipped);
 	counter=0;
 	}
 	
 void block_index(unsigned char cache[],int pixel value){
-    		index=(3*red(pixel_value)+5*green(pixel_value)+7*blue(pixel_value))%64;
-		if(cache[index]!=0){
 			fwrite(&index,sizeof(unsigned char),1,zipped);
-		}	
+			
     }	
 
 void block_diff(unsigned char diff_red,unsigned char diff_green,unsigned char diff_blue){       
@@ -87,7 +88,7 @@ pi=&i;pj=&j;
 int previous_pixel_value, pixel_value;
 unsigned char red_byte=red(previous_pixel_value);,green_byte=green(previous_pixel_value);,blue_byte=blue(previous_pixel_value);
 unsigned char cache[64]={0};
-unsigned char block_rgb=254;
+unsigned char block_rgb=significant_bit_rgb;
 
 previous_pixel_value=ppmRead(img_entree,0,0);
 
@@ -100,7 +101,9 @@ unsigned char index;
 index=(3*red(previous_pixel_value)+5*green(previous_pixel_value)+7*blue(previous_pixel_value))%64;
 cache[index]=previous_pixel_value;//saving the first pixel value
 
-
+unsigned char diff_red;
+unsigned char diff_green;
+unsigned char diff_blue;
 
 for (i=0;i<height;i++){
 	for (j=0;j<width;j++){
@@ -110,19 +113,26 @@ for (i=0;i<height;i++){
 		}
 		
 		pixel_value=ppmRead(img_entree,j,i);
+		diff_red=(red(pixel_value)-red(previous_pixel_value));
+       		diff_green=(green(pixel_value)-green(previous_pixel_value));
+        	diff_blue=(blue(pixel_value)-blue(previous_pixel_value));
 		
 //block_same
 		if(previous_pixel_value==pixel_value){
         		block_same(int* pi,int* pj,pixel_value,previous_pixel_value);
        		}
-
+		
+//check if j go out of the picture
+		if (j>=width){
+		break;
+		}
 //block_index
-		block_index(cache,pixel_value);
+		index=(3*red(pixel_value)+5*green(pixel_value)+7*blue(pixel_value))%64;
+		if(cache[index]!=0){
+			block_index(cache,pixel_value);
+		}
         
 //block_diff 
-		unsigned char diff_red=(red(pixel_value)-red(previous_pixel_value));
-       		unsigned char diff_green=(green(pixel_value)-green(previous_pixel_value));
-        	unsigned char diff_blue=(blue(pixel_value)-blue(previous_pixel_value));
 		else if( diff_red>=(-2) && diff_red<=1 && diff_green>=(-2) && diff_green<=1 && diff_blue>=(-2) && diff_blue<=1 ){
             		block_diff(diff_red,diff_green,diff_blue);    
         	}		
@@ -137,10 +147,10 @@ for (i=0;i<height;i++){
             		block_rgb(pixel_value);
         	}
 //index save
-        	index=(3*red(pixel_value)+5*green(pixel_value)+7*blue(pixel_value))%64;
 	    	if(cache[index]==0){
 			cache[index]=pixel_value;
 		}
+		previous_pixel_value=pixel_value;
 	}
 }
 printf("zip created");	
