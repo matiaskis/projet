@@ -1,12 +1,12 @@
 #include "ppm_lib.h"
 #include "zip.h"
 
-void block_same(int* pi,int* pj,int pixel_value,int previous_pixel_value){
+void block_same(int* pi,int* pj,int pixel_value,int previous_pixel_value,int width,PPM_IMG *img_entree,FILE *zipped){
     unsigned char counter;
     *pj++;
 	counter++;
 	while(previous_pixel_value==pixel_value && *pj<width){
-			pixel_value==ppmRead(img_entree,j,i);
+			pixel_value==ppmRead(img_entree,*pj,*pi);
 			*pj++;
 			counter++;//counts the number of successive same pixel
             		
@@ -21,12 +21,12 @@ void block_same(int* pi,int* pj,int pixel_value,int previous_pixel_value){
 	counter=0;
 	}
 	
-void block_index(unsigned char cache[],int pixel value){
+void block_index(unsigned char cache[],int pixel value,FILE *zipped){
 			fwrite(&index,sizeof(unsigned char),1,zipped);
 			
     }	
 
-void block_diff(unsigned char diff_red,unsigned char diff_green,unsigned char diff_blue){       
+void block_diff(unsigned char diff_red,unsigned char diff_green,unsigned char diff_blue,FILE *zipped){       
             diff_red=diff_red+2;
             diff_green=diff_green*4;
             diff_blue=diff_blue*16;
@@ -34,14 +34,14 @@ void block_diff(unsigned char diff_red,unsigned char diff_green,unsigned char di
 	    fwrite(&diff_total,sizeof(unsigned char),1,zipped);
     }
 
-void block_luma(unsigned char diff_red,unsigned char diff_green,unsigned char diff_blue){
+void block_luma(unsigned char diff_red,unsigned char diff_green,unsigned char diff_blue,FILE *zipped){
 	diff_green=significant_bit_luma+diff_green+32;
 	fwrite(&diff_g,sizeof(unsigned char),1,zipped);
 	unsigned char diff_total=(diff_red-diff_green+8)*16+diff_blue-diff_green+8;
 	fwrite(&diff_total,sizeof(unsigned char),1,zipped);
     }
 
-    void block_rgb(unsigned char pixel_value){
+    void block_rgb(unsigned char pixel_value,FILE *zipped){
        		unsigned char red_byte=red(pixel_value);
 	   	unsigned char green_byte=green(pixel_value);
 	    	unsigned char blue_byte=blue(pixel_value);
