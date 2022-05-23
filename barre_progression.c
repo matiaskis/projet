@@ -1,22 +1,17 @@
 #include<stdio.h>
-
-int test(int progression){
+#include<unistd.h>
+int prog_bar(int progression){
     int i;int j;
-    printf("\n-------------\n");
+    printf("\n------------\n");
     printf("|");
     for(i=0;i<progression;i++){
-            printf("#");
+            printf("█");
         }
     for(j=0;j<10-progression;j++){
             printf(" ");
             }
-    printf("|");
-    printf("\n-------------\n");
+    printf("|%d",i*10);
+printf("%c",'%');
+    printf("\n------------\n");
     sleep(1);
-}
-
-int main (){
-    for(int i=1;i<11;i++){
-        test(i);
-      }
 }
