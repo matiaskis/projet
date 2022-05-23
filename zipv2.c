@@ -13,7 +13,7 @@ void block_same(int* pi,int* pj,int pixel_value,int previous_pixel_value,int wid
 			counter++;//counts the number of successive same pixel
             		
 	}
-	printf("%u ",counter);
+	
 //when j is equal to width it check the last pixel	
 	if(previous_pixel_value!=pixel_value){
 		counter--;
