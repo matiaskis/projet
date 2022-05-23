@@ -4,7 +4,7 @@
 #include "zip.h"
 
 void block_same(int* pi,int* pj,int pixel_value,int previous_pixel_value,int width,PPM_IMG *img_entree,FILE *zipped){
-    unsigned char counter;
+    unsigned char counter=0;
     *pj=*pj+1;
 	counter++;
 	while(previous_pixel_value==pixel_value && *pj<width){
