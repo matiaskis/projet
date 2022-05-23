@@ -3,11 +3,11 @@
 
 void block_same(int* pi,int* pj,int pixel_value,int previous_pixel_value,int width,PPM_IMG *img_entree,FILE *zipped){
     unsigned char counter;
-    *pj++;
+    *pj=*pj+1;
 	counter++;
 	while(previous_pixel_value==pixel_value && *pj<width){
-			pixel_value==ppmRead(img_entree,*pj,*pi);
-			*pj++;
+			pixel_value=ppmRead(img_entree,*pj,*pi);
+			 *pj=*pj+1;
 			counter++;//counts the number of successive same pixel
             		
 	}
