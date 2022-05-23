@@ -4,6 +4,7 @@
     #define significant_bit_same 192
     #define significant_bit_diff 64
     #define significant_bit_luma 128
+    #define significant_bit_rgb 254
     
     /*!
      * @brief           this function zip a ppm image into a binary file
