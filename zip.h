@@ -1,5 +1,7 @@
 #ifndef ZIP_H
     #define ZIP_H
+    #include<stdio.h>
+    
     
     #define significant_bit_same 192
     #define significant_bit_diff 64
