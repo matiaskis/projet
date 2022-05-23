@@ -36,16 +36,16 @@ void block_diff(unsigned char diff_red,unsigned char diff_green,unsigned char di
 
 void block_luma(unsigned char diff_red,unsigned char diff_green,unsigned char diff_blue,FILE *zipped){
 	diff_green=significant_bit_luma+diff_green+32;
-	fwrite(&diff_g,sizeof(unsigned char),1,zipped);
+	fwrite(&diff_green,sizeof(unsigned char),1,zipped);
 	unsigned char diff_total=(diff_red-diff_green+8)*16+diff_blue-diff_green+8;
 	fwrite(&diff_total,sizeof(unsigned char),1,zipped);
     }
 
-    void block_rgb(unsigned char pixel_value,FILE *zipped){
+    void block_rgb(unsigned char pixel_value,FILE *zipped,unsigned char block_rgb_bit){
        		unsigned char red_byte=red(pixel_value);
 	   	unsigned char green_byte=green(pixel_value);
 	    	unsigned char blue_byte=blue(pixel_value);
-	    	fwrite(&block_rgb,sizeof(unsigned char),1,zipped);
+	    	fwrite(&block_rgb_bit,sizeof(unsigned char),1,zipped);
 	    	fwrite(&red_byte,sizeof(unsigned char),1,zipped);
 	    	fwrite(&green_byte,sizeof(unsigned char),1,zipped);
 	    	fwrite(&blue_byte,sizeof(unsigned char),1,zipped);
@@ -74,6 +74,7 @@ img_entree=ppmOpen(path_enter);
 
 int width=ppmGetWidth(img_entree), height=ppmGetHeight(img_entree);
 
+
 FILE *zipped;
 zipped=fopen(path_exit,"wb+");
 if(zipped==NULL){
@@ -82,17 +83,18 @@ exit(1);
 }
 
 
-int i, j;
-int* pi,* pj;
-pi=&i;pj=&j;
+int i=0, j=0;
+int* pi; int* pj;
+pi=&i;
+pj=&j;
 int previous_pixel_value, pixel_value;
-unsigned char red_byte=red(previous_pixel_value);green_byte=green(previous_pixel_value);blue_byte=blue(previous_pixel_value);
+unsigned char red_byte=red(previous_pixel_value),green_byte=green(previous_pixel_value),blue_byte=blue(previous_pixel_value);
 unsigned char cache[64]={0};
-unsigned char block_rgb=significant_bit_rgb;
+unsigned char block_rgb_bit=significant_bit_rgb;
 
 previous_pixel_value=ppmRead(img_entree,0,0);
 
-fwrite(&block_rgb,sizeof(unsigned char),1,zipped);
+fwrite(&block_rgb_bit,sizeof(unsigned char),1,zipped);
 fwrite(&red_byte,sizeof(unsigned char),1,zipped);
 fwrite(&green_byte,sizeof(unsigned char),1,zipped);
 fwrite(&blue_byte,sizeof(unsigned char),1,zipped);
@@ -116,11 +118,11 @@ for (i=0;i<height;i++){
 		
 //block_same
 		if(previous_pixel_value==pixel_value){
-        		block_same(pi,pj,pixel_value,previous_pixel_value,width,image_entree,zipped);
+        		block_same(pi,pj,pixel_value,previous_pixel_value,width,img_entree,zipped);
        		}
 		
 //check if j go out of the picture
-		if (j>=width){
+		if (j>=width ){
 		break;
 		}
 //calculate diff
@@ -139,13 +141,13 @@ for (i=0;i<height;i++){
         	}		
 
 //block_luma
-        	else if(diff_green>=(-32) && diff_green<=31 && diff_red-diff_green >= (-8) && dif_red-diff_green <=7 && diff_blue-diff_green >= (-8) && diff_blue-diff_green<=7){
+        	else if(diff_green>=(-32) && diff_green<=31 && diff_red-diff_green >= (-8) && diff_red-diff_green <=7 && diff_blue-diff_green >= (-8) && diff_blue-diff_green<=7){
 	        	block_luma(diff_red,diff_green,diff_blue,zipped);
         	}
 
 //block_rgb
         	else{
-            		block_rgb(pixel_value,zipped);
+            		block_rgb(pixel_value,zipped,block_rgb_bit);
         	}
 //index save
 	    	if(cache[index]==0){
