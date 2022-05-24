@@ -105,7 +105,7 @@ printf("error while creating file");
 exit(1);
 }
 
-void param_zipped_writing(width,height,range,nbColors,zipped);
+param_zipped_writing(width,height,range,nbColors,zipped);
 	
 int i=0, j=0;
 int* pi; int* pj;
