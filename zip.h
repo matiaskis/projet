@@ -67,4 +67,15 @@
      * @return              nothing
      */
     void block_rgb(unsigned char pixel_value,FILE *zipped,unsigned char block_rgb_bit);
+
+	/*!
+     * @brief               	this function write all the parameter of the ppm image in the zipped file
+     * @param width 		integer value which is the width of the ppm image
+     * @param height 		integer value which is the height of the ppm image
+     * @param range             integer value which is the range of color of the ppm image
+     * @param nbColors		integer value which is the number of colors of the ppm image
+     * @param zipped		pointer related to the zipped file
+     * @return              	nothing
+     */
+	void param_zippped_writing(int width, int height,unsigned char range, unsigned char nbColors,FILE* zipped);
 #endif
