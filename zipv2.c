@@ -3,6 +3,25 @@
 #include "ppm_lib.h"
 #include "zip.h"
 
+void param_zippped_writing(int width, int height,unsigned char range, unsigned char nbColors,FILE* zipped){
+	unsigned char binary_width,binary_height;
+	binary_width=width/255;
+	fwrite(&binary_width,sizeof(unsigned char),1,zipped);
+	binary_width=width%255;
+	fwrite(&binary_width,sizeof(unsigned char),1,zipped);
+	
+	binary_height=height/255;
+	fwrite(&binary_height,sizeof(unsigned char),1,zipped);
+	binary_height=height%255;
+	fwrite(&binary_height,sizeof(unsigned char),1,zipped);
+	
+	fwrite(&range,sizeof(unsigned char),1,zipped);
+	
+	fwrite(&nbColors,sizeof(unsigned char),1,zipped);
+}
+	
+	
+
 void block_same(int* pi,int* pj,int pixel_value,int previous_pixel_value,int width,PPM_IMG *img_entree,FILE *zipped){
     unsigned char counter=0;
     *pj=*pj+1;
@@ -76,6 +95,7 @@ PPM_IMG *img_entree;
 img_entree=ppmOpen(path_enter);
 
 int width=ppmGetWidth(img_entree), height=ppmGetHeight(img_entree);
+unsigned char range=ppmGetRange(img_entree),nbColors=ppmGetColors(img_entree);
 
 
 FILE *zipped;
@@ -85,7 +105,8 @@ printf("error while creating file");
 exit(1);
 }
 
-
+void param_zipped_writing(width,height,range,nbColors,zipped);
+	
 int i=0, j=0;
 int* pi; int* pj;
 pi=&i;
