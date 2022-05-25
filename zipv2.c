@@ -22,13 +22,13 @@ void param_zippped_writing(int width, int height,unsigned char range, unsigned c
 	
 	
 
-void block_same(int* pi,int* pj,int pixel_value,int previous_pixel_value,int width,PPM_IMG *img_entree,FILE *zipped){
+void block_same(int i,int* pj,int pixel_value,int previous_pixel_value,int width,PPM_IMG *img_entree,FILE *zipped){
     unsigned char counter=0;
     *pj=*pj+1;
 	counter++;
 	while(previous_pixel_value==pixel_value && *pj<width){
 		while(previous_pixel_value==pixel_value && *pj<width && counter < 62){
-			pixel_value=ppmRead(img_entree,*pj,*pi);
+			pixel_value=ppmRead(img_entree,*pj,i);
 			 *pj=*pj+1;
 			counter++;//counts the number of successive same pixel
             		}
@@ -108,8 +108,7 @@ exit(1);
 param_zipped_writing(width,height,range,nbColors,zipped);
 	
 int i=0, j=0;
-int* pi; int* pj;
-pi=&i;
+int* pj;
 pj=&j;
 int previous_pixel_value, pixel_value;
 unsigned char cache[64]={0};
