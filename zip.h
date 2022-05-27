@@ -77,5 +77,5 @@
      * @param zipped		pointer related to the zipped file
      * @return              	nothing
      */
-	void param_zippped_writing(int width, int height,unsigned char range, unsigned char nbColors,FILE* zipped);
+	void param_zipped_writing(int width, int height,unsigned char range, unsigned char nbColors,FILE* zipped);
 #endif
