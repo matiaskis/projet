@@ -10,3 +10,4 @@
      * @return nothing
      */
 int prog_bar();
+#endif
