@@ -1,9 +1,7 @@
-
-   
 #include "ppm_lib.h"
 #include "zip.h"
 
-void param_zippped_writing(int width, int height,unsigned char range, unsigned char nbColors,FILE* zipped){
+void param_zipped_writing(int width, int height,unsigned char range, unsigned char nbColors,FILE* zipped){
 	unsigned char binary_width,binary_height;
 	binary_width=width/255;
 	fwrite(&binary_width,sizeof(unsigned char),1,zipped);
@@ -36,7 +34,6 @@ void block_same(int i,int* pj,int pixel_value,int previous_pixel_value,int width
 		if(previous_pixel_value!=pixel_value &&	*pj==width){
 			counter--;
 		}
-		printf("%u ", counter);
 		counter=significant_bit_same+counter-1;
 		fwrite(&counter,sizeof(unsigned char),1,zipped);
 		counter=0;
