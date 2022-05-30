@@ -1,4 +1,4 @@
-##include "ppm_lib.h"
+#include "ppm_lib.h"
 #include "zip.h"
 
 void param_zipped_writing(int width, int height,unsigned char range, unsigned char nbColors,FILE* zipped){
