@@ -232,7 +232,7 @@ exit(1);
 	            pixel_value=read_index_block(byte,cache,i,j,image_sortie);
 	        }
 	        
-	        else if(byte<128 && byte>64){
+	        else if(byte<128 && byte>=64){
 	            pixel_value=read_diff_block(byte,previous_pixel_value,i,j,image_sortie);
 	        }
 	        
