@@ -1,4 +1,4 @@
-#include "ppm_lib.h"
+##include "ppm_lib.h"
 #include "zip.h"
 
 void param_zipped_writing(int width, int height,unsigned char range, unsigned char nbColors,FILE* zipped){
@@ -23,7 +23,7 @@ void param_zipped_writing(int width, int height,unsigned char range, unsigned ch
 void block_same(int i,int* pj,int pixel_value,int previous_pixel_value,int width,PPM_IMG *img_entree,FILE *zipped){
     unsigned char counter=0;
     *pj=*pj+1;
-	counter++;
+	counter=counter++;
 	while(previous_pixel_value==pixel_value && *pj<width){
 		while(previous_pixel_value==pixel_value && *pj<width && counter < 62){
 			pixel_value=ppmRead(img_entree,*pj,i);
@@ -31,7 +31,7 @@ void block_same(int i,int* pj,int pixel_value,int previous_pixel_value,int width
 			counter++;//counts the number of successive same pixel
             		}
 //when j is equal to width it check the last pixel		
-		if(previous_pixel_value!=pixel_value &&	*pj==width){
+		if(previous_pixel_value!=pixel_value ||	*pj==width){
 			counter--;
 		}
 		counter=significant_bit_same+counter-1;
@@ -108,13 +108,14 @@ int i=0, j=0;
 int* pj;
 pj=&j;
 int previous_pixel_value, pixel_value;
-unsigned char cache[64]={0};
+int cache[64]={0};
 unsigned char block_rgb_bit=significant_bit_rgb;
 
 previous_pixel_value=ppmRead(img_entree,0,0);
 unsigned char red_byte=red(previous_pixel_value),green_byte=green(previous_pixel_value),blue_byte=blue(previous_pixel_value);
 
 fwrite(&block_rgb_bit,sizeof(unsigned char),1,zipped);
+printf("%u",block_rgb_bit);
 fwrite(&red_byte,sizeof(unsigned char),1,zipped);
 fwrite(&green_byte,sizeof(unsigned char),1,zipped);
 fwrite(&blue_byte,sizeof(unsigned char),1,zipped);
@@ -138,7 +139,7 @@ for (i=0;i<height;i++){
 		
 //block_same
 		if(previous_pixel_value==pixel_value){
-        		block_same(pi,pj,pixel_value,previous_pixel_value,width,img_entree,zipped);
+        		block_same(i,pj,pixel_value,previous_pixel_value,width,img_entree,zipped);
        		}
 		
 //calculate diff
