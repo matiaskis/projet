@@ -23,21 +23,21 @@ void param_zipped_writing(int width, int height,unsigned char range, unsigned ch
 void block_same(int i,int* pj,int pixel_value,int previous_pixel_value,int width,PPM_IMG *img_entree,FILE *zipped){
     unsigned char counter=0;
     *pj=*pj+1;
-	counter=counter++;
-	while(previous_pixel_value==pixel_value && *pj<width){
+	counter++;
 		while(previous_pixel_value==pixel_value && *pj<width && counter < 62){
 			pixel_value=ppmRead(img_entree,*pj,i);
 			 *pj=*pj+1;
 			counter++;//counts the number of successive same pixel
             		}
 //when j is equal to width it check the last pixel		
-		if(previous_pixel_value!=pixel_value ||	*pj==width){
+		if(previous_pixel_value!=pixel_value){
 			counter--;
 		}
 		counter=significant_bit_same+counter-1;
 		fwrite(&counter,sizeof(unsigned char),1,zipped);
 		counter=0;
-	}
+	
+	*pj=*pj-1;
 	}
 
 void block_index(unsigned char index,FILE *zipped){
@@ -115,7 +115,6 @@ previous_pixel_value=ppmRead(img_entree,0,0);
 unsigned char red_byte=red(previous_pixel_value),green_byte=green(previous_pixel_value),blue_byte=blue(previous_pixel_value);
 
 fwrite(&block_rgb_bit,sizeof(unsigned char),1,zipped);
-printf("%u",block_rgb_bit);
 fwrite(&red_byte,sizeof(unsigned char),1,zipped);
 fwrite(&green_byte,sizeof(unsigned char),1,zipped);
 fwrite(&blue_byte,sizeof(unsigned char),1,zipped);
@@ -136,22 +135,27 @@ for (i=0;i<height;i++){
 		}
 		
 		pixel_value=ppmRead(img_entree,j,i);
+		index=(3*red(pixel_value)+5*green(pixel_value)+7*blue(pixel_value))%64;
+//calculate diff
+		diff_red=(red(pixel_value)-red(previous_pixel_value));
+       		diff_green=(green(pixel_value)-green(previous_pixel_value));
+        	diff_blue=(blue(pixel_value)-blue(previous_pixel_value));
+        
 		
 //block_same
 		if(previous_pixel_value==pixel_value){
         		block_same(i,pj,pixel_value,previous_pixel_value,width,img_entree,zipped);
        		}
 		
-//calculate diff
-		diff_red=(red(pixel_value)-red(previous_pixel_value));
-       		diff_green=(green(pixel_value)-green(previous_pixel_value));
-        	diff_blue=(blue(pixel_value)-blue(previous_pixel_value));
+		
+
 //block_index
-		index=(3*red(pixel_value)+5*green(pixel_value)+7*blue(pixel_value))%64;
-		if(cache[index]!=0){
+		
+		else if(cache[index]!=0){
 			block_index(index,zipped);
 		}
-        
+
+
 //block_diff 
 		else if( diff_red>=(-2) && diff_red<=1 && diff_green>=(-2) && diff_green<=1 && diff_blue>=(-2) && diff_blue<=1 ){
             		block_diff(diff_red,diff_green,diff_blue,zipped);    
