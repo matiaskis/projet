@@ -73,7 +73,7 @@ int read_rgb_block(FILE *zip_file,int j, int i,PPM_IMG* image_sortie){
     	return(pix);
 }
     
-int read_same_block(unsigned char byte,PPM_IMG* image_sortie,int i,int *pj,int previous_pixel_value,int width){
+int read_same_block(unsigned char byte,PPM_IMG* image_sortie,int i,int *pj,int previous_pixel_value){
 	int counter;
 	counter=byte-192+1;
 
@@ -155,14 +155,6 @@ void unzip(char **path){
 
 	FILE* zip_file;
 	zip_file=fopen(path_enter,"rb+");
-
-/* FILE *unzipped;
-unzipped=fopen(path_exit,"w+");
-if(unzipped==0){
-printf("error while creating file");
-exit(1);
-}
-*/
 
 	int cache[64]={0};
 	int pixel_value,previous_pixel_value;
