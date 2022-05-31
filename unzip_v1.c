@@ -217,7 +217,7 @@ void unzip(char **path){
 	        }
 	        
 	        else if(byte>192){
-	            pixel_value=read_same_block(byte,image_sortie,i,pj,previous_pixel_value,width);
+	            pixel_value=read_same_block(byte,image_sortie,i,pj,previous_pixel_value);
 	           
 	        }
 	        
