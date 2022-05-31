@@ -82,6 +82,7 @@ int read_same_block(unsigned char byte,PPM_IMG* image_sortie,int i,int *pj,int p
 	                ppmWrite(image_sortie,*pj,i,previous_pixel_value);
 	                *pj=*pj+1;
 	            }
+         *pj=*pj-1;
     return(previous_pixel_value);
 }
 
