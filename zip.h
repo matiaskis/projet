@@ -17,7 +17,7 @@
     
     /*!
      * @brief                       this function count the number of similar pixel and write a "eva_block_same" in the zipped file
-     * @param i                     int to read the ppm image       
+     * @param i                     integer used to read the ppm image       
      * @param pj                    pointer used to interact with the "for" loop which is used to read the ppm image
      * @param pixel_value           integer value of the current pixel 
      * @param previous_pixel_value  integer value of the previous pixel 
