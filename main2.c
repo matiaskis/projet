@@ -11,7 +11,7 @@ PPM_IMG *is;
 int r=0;int g=0;int b=255;
 int pix=pixel(r,g,b);
 for(int i=0;i<7;i++){
-	for(int j=0;j<63;j++){
+	for(int j=0;j<64;j++){
 		ppmWrite(is,j,i,pix);
 	}
 b=b-30;
