@@ -17,7 +17,7 @@
     
     /*!
      * @brief                       this function count the number of similar pixel and write a "eva_block_same" in the zipped file
-     * @param pi                    pointer used to interact with the "for" loop which is used to read the ppm image       
+     * @param i                     int to read the ppm image       
      * @param pj                    pointer used to interact with the "for" loop which is used to read the ppm image
      * @param pixel_value           integer value of the current pixel 
      * @param previous_pixel_value  integer value of the previous pixel 
@@ -26,7 +26,7 @@
      * @param zipped                pointer of the created zipped file
      * @return                      nothing
      */
-    void block_same(int* pi,int* pj,int pixel_value,int previous_pixel_value,int width,PPM_IMG *img_entree,FILE *zipped);
+    void block_same(int i,int* pj,int pixel_value,int previous_pixel_value,int width,PPM_IMG *img_entree,FILE *zipped);
 
     /*!
      * @brief                       this function check if the current pixel value is stored in the cache, if so it write a "eva_block_index"in the zipped file
