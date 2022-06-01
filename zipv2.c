@@ -32,6 +32,7 @@ void block_same(int i,int* pj,int pixel_value,int previous_pixel_value,int width
 //when j is equal to width it check the last pixel		
 		if(previous_pixel_value!=pixel_value){
 			counter--;
+			*pj=*pj-1;
 		}
 		counter=significant_bit_same+counter-1;
 		fwrite(&counter,sizeof(unsigned char),1,zipped);
