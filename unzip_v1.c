@@ -70,9 +70,7 @@ int read_rgb_block(FILE *zip_file,int j, int i,PPM_IMG* image_sortie){
     
     	pix=pixel(red,green,blue);
 	ppmWrite(image_sortie,j,i,pix);
-	if(j==0){
-	printf("suuu rgb");
-	}
+	
     	return(pix);
 }
     
@@ -85,9 +83,7 @@ int read_same_block(unsigned char byte,PPM_IMG* image_sortie,int i,int *pj,int p
 	                *pj=*pj+1;
 	            }
          *pj=*pj-1;
-if(*pj==0){
-	printf("suuu same");
-	}
+
     return(previous_pixel_value);
 }
 
@@ -96,9 +92,7 @@ int read_index_block(unsigned char byte,int cache[],int i,int j,PPM_IMG* image_s
     int pix;
 	pix=cache[index];
 	 ppmWrite(image_sortie,j,i,pix);
-	if(j==0){
-	printf("suuu index");
-	}
+	
 	return(pix);
 }
 
@@ -115,9 +109,7 @@ int read_diff_block(unsigned char byte,int previous_pixel_value,int i,int j,PPM_
     b=blue(previous_pixel_value)+diff_blue;
     pix=pixel(r,g,b);
 	ppmWrite(image_sortie,j,i,pix);
-if(j==0){
-	printf("suuu diff");
-	}
+
     return (pix);
 }
     
@@ -139,9 +131,7 @@ b=blue(previous_pixel_value)+diff_blue;
 int pix;
 pix=pixel(r,g,b);
 ppmWrite(image_sortie,j,i,pix);
-if(j==0){
-	printf("suuu luma");
-	}
+
 return (pix);
 }
 
@@ -212,6 +202,7 @@ void unzip(char **path){
 	int j;
 	int *pj;
 	pj=&j;
+	
 	for(int i=0;i<height;i++){
 	    for(j=0;j<width;j++){
 	        
