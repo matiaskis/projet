@@ -28,7 +28,7 @@ void block_same(int i,int* pj,int pixel_value,int previous_pixel_value,int width
 			pixel_value=ppmRead(img_entree,*pj,i);
 			 *pj=*pj+1;
 			counter++;//counts the number of successive same pixel
-            		}
+           		}
 //when j is equal to width it check the last pixel		
 		if(previous_pixel_value!=pixel_value){
 			counter--;
@@ -39,6 +39,7 @@ void block_same(int i,int* pj,int pixel_value,int previous_pixel_value,int width
 		counter=0;
 	
 	*pj=*pj-1;
+
 	}
 
 void block_index(unsigned char index,FILE *zipped){
@@ -61,10 +62,11 @@ void block_luma(unsigned char diff_red,unsigned char diff_green,unsigned char di
 	fwrite(&diff_total,sizeof(unsigned char),1,zipped);
     }
 
-    void block_rgb(unsigned char pixel_value,FILE *zipped,unsigned char block_rgb_bit){
+    void block_rgb( int pixel_value,FILE *zipped,unsigned char block_rgb_bit){
        		unsigned char red_byte=red(pixel_value);
 	   	unsigned char green_byte=green(pixel_value);
 	    	unsigned char blue_byte=blue(pixel_value);
+	    	
 	    	fwrite(&block_rgb_bit,sizeof(unsigned char),1,zipped);
 	    	fwrite(&red_byte,sizeof(unsigned char),1,zipped);
 	    	fwrite(&green_byte,sizeof(unsigned char),1,zipped);
@@ -113,7 +115,9 @@ int cache[64]={0};
 unsigned char block_rgb_bit=significant_bit_rgb;
 
 previous_pixel_value=ppmRead(img_entree,0,0);
-unsigned char red_byte=red(previous_pixel_value),green_byte=green(previous_pixel_value),blue_byte=blue(previous_pixel_value);
+unsigned char red_byte=red(previous_pixel_value);
+unsigned char green_byte=green(previous_pixel_value);
+unsigned char blue_byte=blue(previous_pixel_value);
 
 fwrite(&block_rgb_bit,sizeof(unsigned char),1,zipped);
 fwrite(&red_byte,sizeof(unsigned char),1,zipped);
@@ -136,6 +140,7 @@ for (i=0;i<height;i++){
 		}
 		
 		pixel_value=ppmRead(img_entree,j,i);
+		
 		index=(3*red(pixel_value)+5*green(pixel_value)+7*blue(pixel_value))%64;
 //calculate diff
 		diff_red=(red(pixel_value)-red(previous_pixel_value));
@@ -176,6 +181,7 @@ for (i=0;i<height;i++){
 			cache[index]=pixel_value;
 		}
 		previous_pixel_value=ppmRead(img_entree,j,i);
+		
 	}
 }
 printf("zip created");	
