@@ -175,7 +175,7 @@ for (i=0;i<height;i++){
 	    	if(cache[index]==0){
 			cache[index]=pixel_value;
 		}
-		previous_pixel_value=pixel_value;
+		previous_pixel_value=ppmRead(img_entree,j,i);
 	}
 }
 printf("zip created");	
