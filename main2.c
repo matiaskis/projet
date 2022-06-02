@@ -1,6 +1,5 @@
 #include"time.h"
 #include"choose.h"
-#include"prog_bar.h"
 #include"zip.h"
 #include"unzip.h"
 #include"ppm_lib.h"
