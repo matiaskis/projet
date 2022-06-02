@@ -9,5 +9,5 @@
      * @param none
      * @return nothing
      */
-int prog_bar();
+int prog_bar(float percent);
 #endif
