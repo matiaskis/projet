@@ -238,9 +238,8 @@ void unzip(char **path){
 	            pixel_value=read_luma_block(zip_file,byte,i,j,unzipped,previous_pixel_value);
 	        }
 		index=(3*red(pixel_value)+5*green(pixel_value)+7*blue(pixel_value))%64;
-		if(cache[index]==0){
+		
 		cache[index]=pixel_value;
-		}
 		previous_pixel_value=pixel_value;
 	            
 	            
