@@ -2,6 +2,7 @@
     #define ZIP_H
 	#include<stdio.h>
 	#include"ppm_lib.h"
+	#include"prog_bar.h"
     
     #define significant_bit_same 192
     #define significant_bit_diff 64
@@ -66,7 +67,7 @@
      * @param zipped                pointer of the created zipped file
      * @return              nothing
      */
-    void block_rgb(unsigned char pixel_value,FILE *zipped,unsigned char block_rgb_bit);
+    void block_rgb(int pixel_value,FILE *zipped,unsigned char block_rgb_bit);
 
 	/*!
      * @brief               	this function write all the parameter of the ppm image in the zipped file
@@ -78,4 +79,11 @@
      * @return              	nothing
      */
 	void param_zipped_writing(int width, int height,unsigned char range, unsigned char nbColors,FILE* zipped);
+
+	 /*!
+     * @brief               		this function display a progression bar 
+     * @param percent   			float value : percentage of the pixel traited 
+     * @return            			nothing
+     */
+	int prog_bar(float percent);
 #endif
