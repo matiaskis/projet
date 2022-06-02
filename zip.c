@@ -1,6 +1,6 @@
 #include "ppm_lib.h"
 #include "zip.h"
-#include "prog_bar.h"
+#include"prog_bar.h"
 
 void param_zipped_writing(int width, int height,unsigned char range, unsigned char nbColors,FILE* zipped){
 	unsigned char binary_width,binary_height;
@@ -139,8 +139,8 @@ for (i=0;i<height;i++){
 		
 		//calculate diff
 		diff_red=(red(pixel_value)-red(previous_pixel_value));
-       	diff_green=(green(pixel_value)-green(previous_pixel_value));
-        diff_blue=(blue(pixel_value)-blue(previous_pixel_value));
+       		diff_green=(green(pixel_value)-green(previous_pixel_value));
+        	diff_blue=(blue(pixel_value)-blue(previous_pixel_value));
         
 
 		// Before processing compute the cache index	
