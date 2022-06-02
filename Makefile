@@ -3,7 +3,7 @@ main.o:main.c zip.h unzip.h choose.h time.h
 	gcc -c main.c -o main.o
 zip.o:zip.c zip.h ppm_lib.h prog_bar.h
 	gcc -c zip.c -o zip.o
-unzip.o:unzip.c unzip.h ppm_lib.h
+unzip.o:unzip.c unzip.h ppm_lib.h prog_bar.h
 	gcc -c unzip.c -o unzip.o
 ppm_lib.o:ppm_lib.c ppm_lib.h
 	gcc -c ppm_lib.c -o ppm_lib.o
