@@ -1,5 +1,6 @@
 #include "ppm_lib.h"
 #include "zip.h"
+#include "prog_bar.h"
 
 void param_zipped_writing(int width, int height,unsigned char range, unsigned char nbColors,FILE* zipped){
 	unsigned char binary_width,binary_height;
@@ -157,7 +158,7 @@ for (i=0;i<height;i++){
 
 //block_index
 		
-		else if(cache[index]!=0){
+		else if(cache[index]==pixel_value){
 			block_index(index,zipped);
 		}
 
@@ -177,10 +178,10 @@ for (i=0;i<height;i++){
             		block_rgb(pixel_value,zipped,block_rgb_bit);
         	}
 //index save
-	    	if(cache[index]==0){
-			cache[index]=pixel_value;
-		}
+		cache[index]=pixel_value;
+		
 		previous_pixel_value=ppmRead(img_entree,j,i);
+		
 		
 	}
 }
