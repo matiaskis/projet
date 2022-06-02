@@ -77,7 +77,7 @@
      */
     int read_luma_block(FILE *zip_file,unsigned char byte,int i,int j,PPM_IMG* unzipped,int previous_pixel_value);
 
-   	 /*!
+   	/*!
      * @brief               		this function display a progression bar 
      * @param percent   			float value : percentage of the pixel traited 
      * @return            			nothing
