@@ -8,7 +8,7 @@
      * @param path                  relative path to the image file to open
      * @return                      nothing
      */
-    void zip(char **path);
+    void unzip(char **path);
 
     /*!
      * @brief                       this function read the parameter of the ppm image in the zipped file                                             
