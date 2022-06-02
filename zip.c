@@ -133,6 +133,7 @@ cache[index]=previous_pixel_value;//saving the first pixel value
 unsigned char diff_red;
 unsigned char diff_green;
 unsigned char diff_blue;
+float percent;
 
 for (i=0;i<height;i++){
 	for (j=0;j<width;j++){
@@ -183,6 +184,9 @@ for (i=0;i<height;i++){
 		
 		previous_pixel_value=ppmRead(img_entree,j,i);
 		
+//display a progress bar
+	percent = (1.0*i*width + j)/(width*height) + 0.005;
+	prog_bar(percent);
 		
 	}
 }
