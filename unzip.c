@@ -48,7 +48,7 @@ void read_param(int *pwidth,int *pheight,int *prange,int *pnbColors,FILE *zip_fi
 
 
 
-int read_rgb_block(FILE *zip_file,int j, int i,PPM_IMG* unzipped){
+int read_rgb_block(FILE *zip_file,int j, int i,PPM_IMG* image_sortie){
 	unsigned char red,green,blue;
 	int pix;
 
@@ -69,17 +69,17 @@ int read_rgb_block(FILE *zip_file,int j, int i,PPM_IMG* unzipped){
 	}
     
     	pix=pixel(red,green,blue);
-	ppmWrite(unzipped,j,i,pix);
+	ppmWrite(image_sortie,j,i,pix);
 	
     	return(pix);
 }
     
-int read_same_block(unsigned char byte,PPM_IMG* unzipped,int i,int *pj,int previous_pixel_value,int width){
+int read_same_block(unsigned char byte,PPM_IMG* image_sortie,int i,int *pj,int previous_pixel_value,int width){
 	int counter;
 	counter=byte-192+1;
 	
 	 for(int k=0;k<counter;k++){
-	                ppmWrite(unzipped,*pj,i,previous_pixel_value);
+	                ppmWrite(image_sortie,*pj,i,previous_pixel_value);
 	                *pj=*pj+1;
 	            }
          *pj=*pj-1;
@@ -87,34 +87,34 @@ int read_same_block(unsigned char byte,PPM_IMG* unzipped,int i,int *pj,int previ
     return(previous_pixel_value);
 }
 
-int read_index_block(unsigned char byte,int cache[],int i,int j,PPM_IMG* unzipped){
+int read_index_block(unsigned char byte,int cache[],int i,int j,PPM_IMG* image_sortie){
     unsigned char index=byte;
     int pix;
 	pix=cache[index];
-	 ppmWrite(unzipped,j,i,pix);
+	 ppmWrite(image_sortie,j,i,pix);
 	
 	return(pix);
 }
 
-int read_diff_block(unsigned char byte,int previous_pixel_value,int i,int j,PPM_IMG* unzipped){
-    int r,g,b,pix;
+int read_diff_block(unsigned char byte,int previous_pixel_value,int i,int j,PPM_IMG* image_sortie){
+    int r,g,b, pix;
     byte=byte-64;
-    int diff_red,diff_green,diff_blue;
+    unsigned char diff_red,diff_green,diff_blue;
     diff_red=(byte/16)-2;
-    byte=byte-diff_red;
+    byte=byte-((diff_red+2)*16);
     diff_green=(byte/4)-2;
-    diff_blue=byte-diff_green-2;
+    diff_blue=byte-((diff_green+2)*4)-2;
     r=red(previous_pixel_value)+diff_red;
     g=green(previous_pixel_value)+diff_green;
     b=blue(previous_pixel_value)+diff_blue;
     pix=pixel(r,g,b);
-	ppmWrite(unzipped,j,i,pix);
+	ppmWrite(image_sortie,j,i,pix);
 
     return (pix);
 }
     
-int read_luma_block(FILE *zip_file,unsigned char byte,int i,int j,PPM_IMG* unzipped,int previous_pixel_value){
-int diff_green,diff_red,diff_blue;
+int read_luma_block(FILE *zip_file,unsigned char byte,int i,int j,PPM_IMG* image_sortie,int previous_pixel_value){
+unsigned char diff_green,diff_red,diff_blue;
 byte=byte-128;
 diff_green=byte-32;
 int r,g,b;
@@ -130,7 +130,7 @@ r=red(previous_pixel_value)+diff_red;
 b=blue(previous_pixel_value)+diff_blue;
 int pix;
 pix=pixel(r,g,b);
-ppmWrite(unzipped,j,i,pix);
+ppmWrite(image_sortie,j,i,pix);
 
 return (pix);
 }
@@ -176,8 +176,8 @@ void unzip(char **path){
 
 	read_param(pwidth,pheight,prange,pnbColors,zip_file);
 
-	PPM_IMG *unzipped;
-	unzipped=ppmNew(width,height,range,nbColors);
+	PPM_IMG *image_sortie;
+	image_sortie=ppmNew(width,height,range,nbColors);
 	
 	
 	
@@ -188,7 +188,7 @@ void unzip(char **path){
 	}
 	
 	if(rgb_byte==0xFE){
-	previous_pixel_value=read_rgb_block(zip_file,0,0,unzipped);
+	previous_pixel_value=read_rgb_block(zip_file,0,0,image_sortie);
 	}
 	else {
 	    printf("error of the rgb_byte value");
@@ -217,36 +217,37 @@ void unzip(char **path){
             	}
 	        
 	        if (byte==0xFE){
-	            pixel_value=read_rgb_block(zip_file,j,i,unzipped);
+	            pixel_value=read_rgb_block(zip_file,j,i,image_sortie);
 	            
 	        }
 	        
 	        else if(byte>=192){
-	            pixel_value=read_same_block(byte,unzipped,i,pj,previous_pixel_value,width);
+	            pixel_value=read_same_block(byte,image_sortie,i,pj,previous_pixel_value,width);
 	           
 	        }
 	        
 	        else if(byte<64){
-	            pixel_value=read_index_block(byte,cache,i,j,unzipped);
+	            pixel_value=read_index_block(byte,cache,i,j,image_sortie);
 	        }
 	        
 	        else if(byte<128 && byte>=64){
-	            pixel_value=read_diff_block(byte,previous_pixel_value,i,j,unzipped);
+	            pixel_value=read_diff_block(byte,previous_pixel_value,i,j,image_sortie);
 	        }
 	        
 	        else{
-	            pixel_value=read_luma_block(zip_file,byte,i,j,unzipped,previous_pixel_value);
+	            pixel_value=read_luma_block(zip_file,byte,i,j,image_sortie,previous_pixel_value);
 	        }
 		index=(3*red(pixel_value)+5*green(pixel_value)+7*blue(pixel_value))%64;
 		
 		cache[index]=pixel_value;
+		
 		previous_pixel_value=pixel_value;
 	            
 	            
 	        }
 	    }
-ppmSave(unzipped,path_exit);
-ppmClose(unzipped);
+ppmSave(image_sortie,path_exit);
+ppmClose(image_sortie);
 fclose(zip_file);
 printf("file unzipped");
 }
