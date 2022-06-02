@@ -1,10 +1,82 @@
 
 #include "ppm_lib.h"
 #include "zip.h"
+#include "prog_bar.h"
 
-void zip(char **path){// getcolor à faire et fclose
+void param_zipped_writing(int width, int height,unsigned char range, unsigned char nbColors,FILE* zipped){
+	unsigned char binary_width,binary_height;
+	binary_width=width/255;
+	fwrite(&binary_width,sizeof(unsigned char),1,zipped);
+	binary_width=width%255;
+	fwrite(&binary_width,sizeof(unsigned char),1,zipped);
+	
+	binary_height=height/255;
+	fwrite(&binary_height,sizeof(unsigned char),1,zipped);
+	binary_height=height%255;
+	fwrite(&binary_height,sizeof(unsigned char),1,zipped);
+	
+	fwrite(&range,sizeof(unsigned char),1,zipped);
+	
+	fwrite(&nbColors,sizeof(unsigned char),1,zipped);
+}
+	
+	
 
+void block_same(int i,int* pj,int pixel_value,int previous_pixel_value,int width,PPM_IMG *img_entree,FILE *zipped){
+    unsigned char counter=0;
+    *pj=*pj+1;
+	counter++;
+		while(previous_pixel_value==pixel_value && *pj<width && counter < 62){
+			pixel_value=ppmRead(img_entree,*pj,i);
+			 *pj=*pj+1;
+			counter++;//counts the number of successive same pixel
+           		}
+//when j is equal to width it check the last pixel		
+		if(previous_pixel_value!=pixel_value){
+			counter--;
+			*pj=*pj-1;
+		}
+		counter=significant_bit_same+counter-1;
+		fwrite(&counter,sizeof(unsigned char),1,zipped);
+		counter=0;
+	
+	*pj=*pj-1;
 
+	}
+
+void block_index(unsigned char index,FILE *zipped){
+			fwrite(&index,sizeof(unsigned char),1,zipped);
+			
+    }	
+
+void block_diff(unsigned char diff_red,unsigned char diff_green,unsigned char diff_blue,FILE *zipped){       
+            diff_red=diff_red+2;
+            diff_green=(diff_green+2)*4;
+            diff_blue=(diff_blue+2)*16;
+	    unsigned char diff_total=significant_bit_diff+diff_red+diff_blue+diff_green;
+	    fwrite(&diff_total,sizeof(unsigned char),1,zipped);
+    }
+
+void block_luma(unsigned char diff_red,unsigned char diff_green,unsigned char diff_blue,FILE *zipped){
+	diff_green=significant_bit_luma+diff_green+32;
+	fwrite(&diff_green,sizeof(unsigned char),1,zipped);
+	unsigned char diff_total=(diff_red-diff_green+8)*16+diff_blue-diff_green+8;
+	fwrite(&diff_total,sizeof(unsigned char),1,zipped);
+    }
+
+void block_rgb( int pixel_value,FILE *zipped,unsigned char block_rgb_bit){
+       		unsigned char red_byte=red(pixel_value);
+	   	unsigned char green_byte=green(pixel_value);
+	    	unsigned char blue_byte=blue(pixel_value);
+	    	
+	    	fwrite(&block_rgb_bit,sizeof(unsigned char),1,zipped);
+	    	fwrite(&red_byte,sizeof(unsigned char),1,zipped);
+	    	fwrite(&green_byte,sizeof(unsigned char),1,zipped);
+	    	fwrite(&blue_byte,sizeof(unsigned char),1,zipped);
+    }
+
+void zip(char **path){
+    // getcolor à faire
 
 char *path_enter, *path_exit;
 
@@ -14,152 +86,134 @@ printf("error path enter");
 exit(1);
 }
 
-
 path_exit=path[2];
 if (path_exit==NULL){
 printf("error path exit");
 exit(1);
 }
 
-
 PPM_IMG *img_entree;
 
 img_entree=ppmOpen(path_enter);
 
-
-int width, height;
-
-width=ppmGetWidth(img_entree);
-
-
-
-height=ppmGetHeight(img_entree);
+int width=ppmGetWidth(img_entree), height=ppmGetHeight(img_entree);
+unsigned char range=ppmGetRange(img_entree),nbColors=ppmGetColors(img_entree);
 
 
 FILE *zipped;
 zipped=fopen(path_exit,"wb+");
-if(zipped==0){
+if(zipped==NULL){
 printf("error while creating file");
 exit(1);
 }
 
-
-int i, j;
-int last_pixel_value, pixel_value1;
-unsigned char counter=0;
+param_zipped_writing(width,height,range,nbColors,zipped);
+	
+int i=0, j=0;
+int* pj;
+pj=&j;
+int previous_pixel_value, pixel_value;
 int cache[64]={0};
-unsigned char  diff_b,diff_r,diff_g,diff_total;
-unsigned char  block_rgb;
-block_rgb=254;
-last_pixel_value=ppmRead(img_entree,0,0);
-fwrite(&block_rgb,sizeof(unsigned char ),1,zipped);
+unsigned char block_rgb_bit=significant_bit_rgb;
 
-unsigned char red_byte,green_byte,blue_byte;
-	red_byte=red(last_pixel_value);
-	green_byte=green(last_pixel_value);
-	blue_byte=blue(last_pixel_value);
+previous_pixel_value=ppmRead(img_entree,0,0);
+unsigned char red_byte=red(previous_pixel_value);
+unsigned char green_byte=green(previous_pixel_value);
+unsigned char blue_byte=blue(previous_pixel_value);
 
-
-fwrite(&red_byte,sizeof(unsigned char ),1,zipped);
-fwrite(&green_byte,sizeof(unsigned char ),1,zipped);
-fwrite(&blue_byte,sizeof(unsigned char ),1,zipped);
-
-
+fwrite(&block_rgb_bit,sizeof(unsigned char),1,zipped);
+fwrite(&red_byte,sizeof(unsigned char),1,zipped);
+fwrite(&green_byte,sizeof(unsigned char),1,zipped);
+fwrite(&blue_byte,sizeof(unsigned char),1,zipped);
 
 unsigned char index;
-index=(3*red(last_pixel_value)+5*green(last_pixel_value)+7*blue(last_pixel_value))%64;
-cache[index]=last_pixel_value;//enregistrement premier pixel dans le cache
+index=(3*red(previous_pixel_value)+5*green(previous_pixel_value)+7*blue(previous_pixel_value))%64;
+cache[index]=previous_pixel_value;//saving the first pixel value
 
+unsigned char diff_red;
+unsigned char diff_green;
+unsigned char diff_blue;
+
+float percent;
+
+printf("\n\n\n\n\n");
 
 for (i=0;i<height;i++){
 	for (j=0;j<width;j++){
 	
 		if (i==0 && j==0){
-		j++;	
+			j++;	
 		}
 		
-
-//int les diffs avant tester diff temps?
-		pixel_value1=ppmRead(img_entree,j,i);
+		pixel_value=ppmRead(img_entree,j,i);
 		
+//calculate diff
+		diff_red=(red(pixel_value)-red(previous_pixel_value));
+       		diff_green=(green(pixel_value)-green(previous_pixel_value));
+        	diff_blue=(blue(pixel_value)-blue(previous_pixel_value));
+        
 
-
-
+		// Before processing compute the cache index	
+		index=(3*red(pixel_value)+5*green(pixel_value)+7*blue(pixel_value))%64;
+		
 
 //block_same
-		if(last_pixel_value==pixel_value1){
-		j++;
-		counter++;
-		while(last_pixel_value==pixel_value1 && j<width){// attention j ne doit pas depasser height changement a faire
+		if(previous_pixel_value==pixel_value){
+	// compteur dans la fonction zip ++
+       		}
+		else{
+			// tant que 'supérieur strict' à 0
+				// ecrit un BLK_SAME avec le minimum entre 62 et le compteur     (// code précédent //	block_same(i,pj,pixel_value,previous_pixel_value,width,img_entree,zipped); )
+				// décrementation du compteur de la valeur écrite juste avant
+			// fin tant que				
+			// compteur normalement remis à 0 dan sla boucle tant que (faire gaffe que c'est bien le cas)
 			
-			pixel_value1==ppmRead(img_entree,j,i);
-			j++;
-			counter++;// compte le nombre de pixel identique a la suite
+        	
+
+
+
+			//block_index
+			if(cache[index] == pixel_value){
+				block_index(index,zipped);
 			}
-		if(last_pixel_value==pixel_value1){
+
+	
+			//block_diff 
+			else if( diff_red>=(-2) && diff_red<=1 && diff_green>=(-2) && diff_green<=1 && diff_blue>=(-2) && diff_blue<=1 ){
+		    		block_diff(diff_red,diff_green,diff_blue,zipped);    
+			}		
+
+			//block_luma
+			else if(diff_green>=(-32) && diff_green<=31 && diff_red-diff_green >= (-8) && diff_red-diff_green <=7 && diff_blue-diff_green >= (-8) && diff_blue-diff_green<=7){
+				block_luma(diff_red,diff_green,diff_blue,zipped);
+			}
+
+			//block_rgb
+			else{
+		    		block_rgb(pixel_value,zipped,block_rgb_bit);
+			}
+		}
+
+
+		//index save
+
+		// AFTER pixel processing ALWAYS update this cache slot !!!		
+    		cache[index]=pixel_value;
+
+
 		
-		}
-		else counter --;
-
-		counter=128+64+counter-1; //define bit_fort_block_same 128+64
-		//verifier si la dernier valeur existe deja dans le cache avant de l engistrer dedans
-		fwrite(&counter, sizeof(unsigned char ),1,zipped);
-		counter=0;
-		}
-	
-		//verfi de j
-		if (j>=width){
-		break;
-		}
-
-//block_index
-		index=(3*red(pixel_value1)+5*green(pixel_value1)+7*blue(pixel_value1))%64;
-
-		if(cache[index]!=0){
-		fwrite(&index,sizeof(unsigned char),1,zipped);
-		}
-
-//block_diff
+		previous_pixel_value=ppmRead(img_entree,j,i);
 		
-		else if( (red(pixel_value1)-red(last_pixel_value))>=(-2) && (red(pixel_value1)-red(last_pixel_value))<=1 && (green(pixel_value1)-green(last_pixel_value))>=(-2) && (green(pixel_value1)-green(last_pixel_value))<=1 && (blue(pixel_value1)-blue(last_pixel_value))>=(-2) && (blue(pixel_value1)-blue(last_pixel_value))<=1 ){
-
-diff_r=red(pixel_value1)-red(last_pixel_value)+2;
-diff_g=(green(pixel_value1)-green(last_pixel_value)+2)*4;
-diff_b=(blue(pixel_value1)-blue(last_pixel_value)+2)*16;
-
-	
-	diff_total=64+diff_r+diff_b+diff_g; //define bit_fort_block_diff 64
-	fwrite(&diff_total,sizeof(unsigned char),1,zipped);
-}		
 
 
-//block_luma
-else if((green(pixel_value1)-green(last_pixel_value))>=(-32) && (green(pixel_value1)-green(last_pixel_value))<=31 && (red(pixel_value1)-red(last_pixel_value))-(green(pixel_value1)-green(last_pixel_value)) >= (-8) && (red(pixel_value1)-red(last_pixel_value))-(green(pixel_value1)-green(last_pixel_value)) <=7 && (blue(pixel_value1)-blue(last_pixel_value))-(green(pixel_value1)-green(last_pixel_value)) >= (-8) && (blue(pixel_value1)-blue(last_pixel_value))-(green(pixel_value1)-green(last_pixel_value))<=7){
-	diff_g=128+(green(pixel_value1)-green(last_pixel_value))+32;////define bit_fort_block_luma 128
-	fwrite(&diff_g,sizeof(unsigned char),1,zipped);
-	diff_total=((red(pixel_value1)-red(last_pixel_value))-(green(pixel_value1)-green(last_pixel_value))+8)*16+(blue(pixel_value1)-blue(last_pixel_value))-(green(pixel_value1)-green(last_pixel_value))+8;
-	fwrite(&diff_total,sizeof(unsigned char),1,zipped);
+		// display progress bar
+		percent = (1.0*i*width + j)/(width*height) + 0.005;
+		prog_bar(percent);
+		
+	}
 }
-
-//block_rgb
-else{
-	
-	red_byte=red(pixel_value1);
-	green_byte=green(pixel_value1);
-	blue_byte=blue(pixel_value1);
-	//define block rgb
-	fwrite(&block_rgb,sizeof(unsigned char),1,zipped);
-	fwrite(&red_byte,sizeof(unsigned char),1,zipped);
-	fwrite(&green_byte,sizeof(unsigned char),1,zipped);
-	fwrite(&blue_byte,sizeof(unsigned char),1,zipped);
-}
-	last_pixel_value=pixel_value1;
-	if(cache[index]==0){
-		cache[index]=pixel_value1;
-		}
-}
-}
-printf("zip created");		
+printf("zip created");	
+fclose(zipped);	
 }
 	
 
