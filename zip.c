@@ -49,17 +49,18 @@ void block_index(unsigned char index,FILE *zipped){
     }	
 
 void block_diff(unsigned char diff_red,unsigned char diff_green,unsigned char diff_blue,FILE *zipped){       
-            diff_red=diff_red+2;
+            diff_red=(diff_red+2)*16;
             diff_green=(diff_green+2)*4;
-            diff_blue=(diff_blue+2)*16;
+            diff_blue=(diff_blue+2);
 	    unsigned char diff_total=significant_bit_diff+diff_red+diff_blue+diff_green;
 	    fwrite(&diff_total,sizeof(unsigned char),1,zipped);
     }
 
 void block_luma(unsigned char diff_red,unsigned char diff_green,unsigned char diff_blue,FILE *zipped){
+	unsigned char diff_g=diff_green;
 	diff_green=significant_bit_luma+diff_green+32;
 	fwrite(&diff_green,sizeof(unsigned char),1,zipped);
-	unsigned char diff_total=(diff_red-diff_green+8)*16+diff_blue-diff_green+8;
+	unsigned char diff_total=(diff_red-diff_g+8)*16+diff_blue-diff_g+8;
 	fwrite(&diff_total,sizeof(unsigned char),1,zipped);
     }
 
