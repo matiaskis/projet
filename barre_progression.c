@@ -1,24 +1,39 @@
+
 #include"prog_bar.h"
 
-int prog_bar(){
-    int i,j;
- for(i=0;i<11;i++){
-    printf("\n--------------\n");
-    printf("|");
-    
-    for(j=0;j<i;j++){
-            printf("█");
-        }
+// percent float value between 0 and 1 both included
+int prog_bar(float percent){
+    int i;
+    int L = 40;
+    int N = (int)(percent*L);
 
-    for(j=0;j<10-i;j++){
+
+    printf("\33[4A");
+    printf("\33[1G");
+    
+
+    printf("\n ");
+    for(i=0;i<L;i++){
+        printf("-");
+    }
+    printf("\n|");
+    
+    for(i=0;i<L;i++){
+        if(i<N){
+            printf("#");             
+        }
+        else{
             printf(" ");
-            }
-            if(i<7){
-              printf(" ");
-            }
-    printf("|%d",i*10);
+        }
+    }
+
+    printf("| %3d",(int)(percent*100));
     printf("%c",'%');
-    printf("\n--------------\n");
-    sleep(1);
-}
+    printf("\n ");
+    for(i=0;i<L;i++){
+        printf("-");
+    }
+    printf("\n|");
+
+    usleep(1);
 }
