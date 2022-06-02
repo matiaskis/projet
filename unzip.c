@@ -166,6 +166,7 @@ void unzip(char **path){
 
 
 	int width,height,range,nbColors;
+	float percent;
 	unsigned char rgb_byte;
 	int *pwidth,*pheight,*prange,*pnbColors;
 
@@ -242,6 +243,10 @@ void unzip(char **path){
 		cache[index]=pixel_value;
 		
 		previous_pixel_value=pixel_value;
+
+//display a progress bar
+		percent = (1.0*i*width + j)/(width*height) + 0.005;
+		prog_bar(percent);
 	            
 	            
 	        }
