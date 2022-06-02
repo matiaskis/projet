@@ -12,9 +12,10 @@ for(int i=0;i<5;i++){
 	for(int j=0;j<63;j++){
 		ppmWrite(is,j,i,pix);
 	}
-r=r+50;b=b-50;
+r=r+50;b=b+50;
+pix=pixel(r,g,b);
 }
-ppmSave(is,"projet_image/imagepleine");
+ppmSave(is,"projet_image/imagergb");
 ppmClose(is);
 return 0;
 }
