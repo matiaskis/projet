@@ -160,7 +160,7 @@ int read_diff_block_pgm(unsigned char byte,int previous_pixel_value,int i,int j,
     byte=byte-significant_bit_diff;
     unsigned char diff_grey;
     
-	diff_grey=byte-offset_diff_value
+	diff_grey=byte-offset_diff_value;
    	//get the current pixel value by adding the difference
     b=blue(previous_pixel_value)+diff_grey;
   	g=b;
@@ -331,7 +331,7 @@ else{
             	}
 	        //rgb block traitment
 	        if (byte==0xFE){
-	            pixel_value=read_rgb_block_rgb_pgm(zip_file,j,i,image_sortie);
+	            pixel_value=read_rgb_block_pgm(zip_file,j,i,image_sortie);
 	         }
 	        //same block
 	        else if(byte>=significant_bit_same){
