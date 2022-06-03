@@ -1,8 +1,8 @@
-#include "ppm_lib.h"
 #include <sys/stat.h>
+#include "compar.h"
 
 
-void compar(char **argv, PPM_IMG* image_sortie){
+void compar(char **argv){
 char *filename_enter=argv[1];
 char *filename_exit=argv[2];
 
@@ -19,15 +19,20 @@ struct stat exitt;
  unsigned int byte_enter=enter.st_size;
  unsigned int byte_exit=exitt.st_size;
  float calculation;
+ 
+  
 
  if(byte_enter<=byte_exit){
- calculation=(byte_exit/byte_enter-1)*100;
- printf("you are unziped of %f %c",calculation,'%');
+ calculation=((float)byte_enter/(float)byte_exit);
+ calculation=(1-calculation)*100;
+ printf("you are unziped of %f %c\n",calculation,'%');
  }
  else{
- calculation=(byte_exit/byte_enter-1)*100;
- printf("you are ziped of %f %c",calculation,'%');
+ calculation=((float)byte_exit/(float)byte_enter);
+ calculation=(1-calculation)*100;
+ printf("you have ziped of %f %c\n",calculation,'%');
  }
  printf("Total file size: %lu bytes\n", exitt.st_size);
- ppmDisplay  (image_sortie); 
+ 
  }
+ 
