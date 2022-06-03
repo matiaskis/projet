@@ -91,4 +91,8 @@
      * @return            			nothing
      */
 	int prog_bar(float percent);
+	
+	void block_rgb_grey(int pixel_value,FILE *zipped,unsigned char block_rgb_bit);
+	void block_luma_grey(unsigned char diff_grey,FILE *zipped);
+	void block_diff_grey(unsigned char diff_grey,FILE *zipped);
 #endif
