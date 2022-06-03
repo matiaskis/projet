@@ -13,6 +13,6 @@ int choose();
      *@param none.
      *@return nothing.
      */
-void vide_buffer();
+void clear_buffer();
 
 #endif
