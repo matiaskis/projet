@@ -25,7 +25,7 @@ struct stat exitt;
  if(byte_enter<=byte_exit){
  calculation=((float)byte_enter/(float)byte_exit);
  calculation=(1-calculation)*100;
- printf("you are unziped of %f %c\n",calculation,'%');
+ printf("you have unziped of %f %c\n",calculation,'%');
  }
  else{
  calculation=((float)byte_exit/(float)byte_enter);
