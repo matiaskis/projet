@@ -7,5 +7,10 @@
 	#include <fcntl.h>
 	#include <time.h>
 	
-void compar(char **argv);
+    /*!
+     * @brief 	this function display the parameter of the ppm img/zip or unzip ratio
+     * @param 	path relative to enter/exit file
+     * @return  nothing
+     */
+	void compar(char **argv);
 #endif
