@@ -2,6 +2,7 @@
 #include "ppm_lib.h"
 #include "compar.h"
 
+
 void read_param(int *pwidth,int *pheight,int *prange,int *pnbColors,FILE *zip_file){
 
 	unsigned char width_byte,height_byte,range_byte,nbColors_byte;
@@ -134,6 +135,56 @@ int read_luma_block(FILE *zip_file,unsigned char byte,int i,int j,PPM_IMG* image
 }
 
 
+
+//pgm function
+
+int read_rgb_block_pgm(FILE *zip_file,int j, int i,PPM_IMG* image_sortie){
+	unsigned char red,green,blue;
+	int pix;
+	//get the grey value after the rgb block
+	fread(&red,sizeof(unsigned char),1,zip_file);
+	if(red>255 || red<0){
+	      printf("error grey_byte");
+          exit(1);
+	}
+	green=red;
+	blue=red; 
+    pix=pixel(red,green,blue);
+	ppmWrite(image_sortie,j,i,pix);//write the pixel
+	return(pix);//return the current pixel value
+}
+    
+
+int read_diff_block_pgm(unsigned char byte,int previous_pixel_value,int i,int j,PPM_IMG* image_sortie){
+    int r,g,b,pix;
+    byte=byte-significant_bit_diff;
+    unsigned char diff_grey;
+    
+	diff_grey=byte-offset_diff_value
+   	//get the current pixel value by adding the difference
+    b=blue(previous_pixel_value)+diff_grey;
+  	g=b;
+  	r=b;
+    pix=pixel(r,g,b);
+	ppmWrite(image_sortie,j,i,pix);
+	return (pix);
+}
+    
+int read_luma_block_pgm(FILE *zip_file,unsigned char byte,int i,int j,PPM_IMG* image_sortie,int previous_pixel_value){
+	unsigned char diff_grey;
+	byte=byte-significant_bit_luma;
+	diff_grey=byte-offset_diff_green;//offset of diff green and grey is similar
+	int r,g,b;
+	b=blue(previous_pixel_value)+diff_grey;
+	g=b;
+	r=b;
+	int pix=pixel(r,g,b);
+	ppmWrite(image_sortie,j,i,pix);
+	return (pix);
+}
+
+
+
 void unzip(char **path){
 	char* path_enter, *path_exit;
 	path_enter=path[1];//path relative to the zipped file
@@ -156,6 +207,11 @@ void unzip(char **path){
 	float percent;
 	unsigned char rgb_byte;
 	int *pwidth,*pheight,*prange,*pnbColors;
+	int grey;
+	unsigned char byte;
+	int j,i;
+	int *pj;
+	pj=&j;
 	
 	pwidth=&width;
 	pheight=&height;
@@ -163,7 +219,74 @@ void unzip(char **path){
 	pnbColors=&nbColors;
 
 	read_param(pwidth,pheight,prange,pnbColors,zip_file);
+	
+	if(nbColors==3){
+		PPM_IMG *image_sortie;
+		image_sortie=ppmNew(width,height,range,nbColors);//create a ppm_img structure
+		
+		fread(&rgb_byte,sizeof(unsigned char),1,zip_file);//reading the first rgb block
+		if(rgb_byte==0){
+		      printf("error rgb_byte non existant");
+    	      exit(1);
+		}
+	
+		if(rgb_byte==0xFE){
+		previous_pixel_value=read_rgb_block(zip_file,0,0,image_sortie);
+		}
+		else {
+		    printf("error of the rgb_byte value");
+		    exit(1);
+		}
 
+		index=(3*red(previous_pixel_value)+5*green(previous_pixel_value)+7*blue(previous_pixel_value))%64;
+		cache[index]=previous_pixel_value;//save the first pixel value
+	
+
+	
+		for(i=0;i<height;i++){
+		    for(j=0;j<width;j++){
+	        
+		        if(j==0 && i==0){
+		            j++;
+		        }
+		        
+	 	       fread(&byte,sizeof(unsigned char),1,zip_file);//read the current byte
+	 	       if(byte<0 || byte>255){
+	  	          printf("error byte read");
+     		       	exit(1);
+       		     	}
+	 	       //rgb block traitment
+	 	       if (byte==0xFE){
+	 	           pixel_value=read_rgb_block(zip_file,j,i,image_sortie);
+	     	    }
+	    	    //same block
+	    	    else if(byte>=significant_bit_same){
+	            pixel_value=read_same_block(byte,image_sortie,i,pj,previous_pixel_value,width);
+	           
+	     	   }
+	     	   //index block
+	     	   else if(byte<significant_bit_diff){
+	            pixel_value=read_index_block(byte,cache,i,j,image_sortie);
+	     	   }
+	     	   //diff block
+	     	   else if(byte<significant_bit_luma && byte>=significant_bit_diff){
+	            pixel_value=read_diff_block(byte,previous_pixel_value,i,j,image_sortie);
+	     	   }
+	     	   //luma block
+	     	   else{
+	      	      pixel_value=read_luma_block(zip_file,byte,i,j,image_sortie,previous_pixel_value);
+	       	 }
+				index=(3*red(pixel_value)+5*green(pixel_value)+7*blue(pixel_value))%64;//calculate index of the pixel value	
+				cache[index]=pixel_value;//saving pixel value in the cache 		
+				previous_pixel_value=pixel_value;
+			}
+			//display a progress bar
+			percent = (1.0*i*width + j)/(width*height) + 0.005;
+			prog_bar(percent);	            
+		}	
+	}
+		
+else{
 	PPM_IMG *image_sortie;
 	image_sortie=ppmNew(width,height,range,nbColors);//create a ppm_img structure
 		
@@ -174,22 +297,20 @@ void unzip(char **path){
 	}
 	
 	if(rgb_byte==0xFE){
-	previous_pixel_value=read_rgb_block(zip_file,0,0,image_sortie);
+		previous_pixel_value=read_rgb_block_pgm(zip_file,0,0,image_sortie);
 	}
 	else {
 	    printf("error of the rgb_byte value");
 	    exit(1);
 	}
 
-	index=(3*red(previous_pixel_value)+5*green(previous_pixel_value)+7*blue(previous_pixel_value))%64;
+	grey=blue(previous_pixel_value);
+	index=(3*grey+5*grey+7*grey)%64;
 	cache[index]=previous_pixel_value;//save the first pixel value
 	
-	unsigned char byte;
-	int j;
-	int *pj;
-	pj=&j;
 	
-	for(int i=0;i<height;i++){
+	
+	for(i=0;i<height;i++){
 	    for(j=0;j<width;j++){
 	        
 	        if(j==0 && i==0){
@@ -203,7 +324,7 @@ void unzip(char **path){
             	}
 	        //rgb block traitment
 	        if (byte==0xFE){
-	            pixel_value=read_rgb_block(zip_file,j,i,image_sortie);
+	            pixel_value=read_rgb_block_rgb_pgm(zip_file,j,i,image_sortie);
 	         }
 	        //same block
 	        else if(byte>=significant_bit_same){
@@ -216,13 +337,14 @@ void unzip(char **path){
 	        }
 	        //diff block
 	        else if(byte<significant_bit_luma && byte>=significant_bit_diff){
-	            pixel_value=read_diff_block(byte,previous_pixel_value,i,j,image_sortie);
+	            pixel_value=read_diff_block_pgm(byte,previous_pixel_value,i,j,image_sortie);
 	        }
 	        //luma block
 	        else{
-	            pixel_value=read_luma_block(zip_file,byte,i,j,image_sortie,previous_pixel_value);
+	            pixel_value=read_luma_block_pgm(zip_file,byte,i,j,image_sortie,previous_pixel_value);
 	        }
-			index=(3*red(pixel_value)+5*green(pixel_value)+7*blue(pixel_value))%64;//calculate index of the pixel value	
+			grey=blue(pixel_value);
+			index=(3*grey+5*grey+7*grey)%64;//calculate index of the pixel value	
 			cache[index]=pixel_value;//saving pixel value in the cache 		
 			previous_pixel_value=pixel_value;
 		}
@@ -230,11 +352,11 @@ void unzip(char **path){
 		percent = (1.0*i*width + j)/(width*height) + 0.005;
 		prog_bar(percent);	            
 	}
+}
 	ppmSave(image_sortie,path_exit);
 	fclose(zip_file);
 	printf("file unzipped\n");
 	compar(path);
 	ppmDisplay(image_sortie);
 	ppmClose(image_sortie);
-	
 }
