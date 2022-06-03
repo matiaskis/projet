@@ -3,6 +3,7 @@
 	#include<stdio.h>
 	#include"ppm_lib.h"
 	#include"prog_bar.h"
+	#include "compar.h"
     
     #define significant_bit_same 192
     #define significant_bit_diff 64
