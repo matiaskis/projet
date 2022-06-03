@@ -1,5 +1,6 @@
 #include "unzip.h"
 #include "ppm_lib.h"
+#include "compar.h"
 
 void read_param(int *pwidth,int *pheight,int *prange,int *pnbColors,FILE *zip_file){
 
