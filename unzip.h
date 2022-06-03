@@ -2,7 +2,6 @@
     #define UNZIP_H
     #include<stdio.h>
     #include"ppm_lib.h"
-    #include "compar.h"
     
     #define significant_bit_same 192
     #define significant_bit_diff 64
@@ -93,4 +92,7 @@
      * @return            			nothing
      */
 	int prog_bar(float percent);
+	int read_luma_block_pgm(FILE *zip_file,unsigned char byte,int i,int j,PPM_IMG* image_sortie,int previous_pixel_value);
+	int read_diff_block_pgm(unsigned char byte,int previous_pixel_value,int i,int j,PPM_IMG* image_sortie);
+	int read_rgb_block_pgm(FILE *zip_file,int j, int i,PPM_IMG* image_sortie);
 #endif
