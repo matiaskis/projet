@@ -7,5 +7,5 @@
 	#include <fcntl.h>
 	#include <time.h>
 	
-void compar(char **argv, PPM_IMG* image_sortie);
+void compar(char **argv);
 #endif
