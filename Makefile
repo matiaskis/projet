@@ -1,5 +1,5 @@
 all: exec
-main.o:main.c zip.h unzip.h choose.h time.h 
+main.o:main.c zip.h unzip.h choose.h time.h compar.h
 	gcc -c main.c -o main.o
 zip.o:zip.c zip.h ppm_lib.h prog_bar.h
 	gcc -c zip.c -o zip.o
@@ -13,8 +13,10 @@ prog_bar.o:prog_bar.c prog_bar.h
 	gcc -c prog_bar.c -o prog_bar.o
 time.o:time.c time.h
 	gcc -c time.c -o time.o
-exec:main.o zip.o unzip.o ppm_lib.o choose.o time.o prog_bar.o
-	gcc main.o zip.o unzip.o ppm_lib.o choose.o time.o prog_bar.o  -o exec
+compar.o:compar.c compar.h
+	gcc -c compar.c -o compar.o
+exec:main.o zip.o unzip.o ppm_lib.o choose.o time.o prog_bar.o compar.o
+	gcc main.o zip.o unzip.o ppm_lib.o choose.o time.o prog_bar.o compar.o -o exec
 clean:
 	rm -f *.o
 	rm exec
