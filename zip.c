@@ -54,6 +54,12 @@ void block_diff(unsigned char diff_red,unsigned char diff_green,unsigned char di
 	unsigned char diff_total=significant_bit_diff+diff_red+diff_blue+diff_green;
 	fwrite(&diff_total,sizeof(unsigned char),1,zipped);
     }
+    
+void block_diff_grey(unsigned char diff_grey,FILE *zipped){
+    diff_grey=significant_bit_diff+(diff_grey+offset_diff_value);
+    fwrite(&diff_grey,sizeof(unsigned char),1,zipped);
+    }
+    
 
 void block_luma(unsigned char diff_red,unsigned char diff_green,unsigned char diff_blue,FILE *zipped){
 	unsigned char diff_g=diff_green;//save the diff green before
@@ -62,7 +68,21 @@ void block_luma(unsigned char diff_red,unsigned char diff_green,unsigned char di
 	unsigned char diff_total=(diff_red-diff_g+offset_luma_value)*16+diff_blue-diff_g+offset_luma_value;
 	fwrite(&diff_total,sizeof(unsigned char),1,zipped);
     }
+    
+    
+void block_luma_grey(unsigned char diff_grey,FILE *zipped){
+diff_grey=significant_bit_luma+diff_grey+offset_diff_grey;
+fwrite(&diff_grey,sizeof(unsigned char),1,zipped);
+}
 
+
+void block_rgb_grey(int pixel_value,FILE *zipped,unsigned char block_rgb_bit){
+	unsigned char grey_byte=blue(pixel_value);    	
+	fwrite(&block_rgb_bit,sizeof(unsigned char),1,zipped);
+	fwrite(&grey_byte,sizeof(unsigned char),1,zipped);
+    }
+    
+    
 void block_rgb(int pixel_value,FILE *zipped,unsigned char block_rgb_bit){
 	unsigned char red_byte=red(pixel_value);
 	unsigned char green_byte=green(pixel_value);
@@ -73,6 +93,8 @@ void block_rgb(int pixel_value,FILE *zipped,unsigned char block_rgb_bit){
 	fwrite(&green_byte,sizeof(unsigned char),1,zipped);
 	fwrite(&blue_byte,sizeof(unsigned char),1,zipped);
     }
+
+
 
 void zip(char **path){
     // getcolor à faire
@@ -89,21 +111,20 @@ void zip(char **path){
 		printf("error path exit");
 		exit(1);
 	}
-
-	PPM_IMG *img_entree;
-	img_entree=ppmOpen(path_enter);
-	int width=ppmGetWidth(img_entree), height=ppmGetHeight(img_entree);
-	unsigned char range=ppmGetRange(img_entree),nbColors=ppmGetColors(img_entree);//parameter of img
-
-
-	FILE *zipped;
+FILE *zipped;
 	zipped=fopen(path_exit,"wb+");//opening the zipped file in binary mode
 	if(zipped==NULL){
 		printf("error while creating file");
 		exit(1);
 	}
+	PPM_IMG *img_entree;
+	img_entree=ppmOpen(path_enter);
+	int width=ppmGetWidth(img_entree), height=ppmGetHeight(img_entree);
+	unsigned char range=ppmGetRange(img_entree),nbColors=ppmGetColors(img_entree);//parameter of img	
 	
 	param_zipped_writing(width,height,range,nbColors,zipped);
+	
+if(nbColors==3){
 	
 	int i,j;
 	int* pj;
@@ -112,16 +133,8 @@ void zip(char **path){
 	int cache[64]={0};
 	unsigned char block_rgb_bit=significant_bit_rgb;
 	previous_pixel_value=ppmRead(img_entree,0,0);//get the value of the first pixel
-	//get every color component of the first pixel
-	unsigned char red_byte=red(previous_pixel_value);
-	unsigned char green_byte=green(previous_pixel_value);
-	unsigned char blue_byte=blue(previous_pixel_value);
-	//writing the first pixel value
-	fwrite(&block_rgb_bit,sizeof(unsigned char),1,zipped);
-	fwrite(&red_byte,sizeof(unsigned char),1,zipped);
-	fwrite(&green_byte,sizeof(unsigned char),1,zipped);
-	fwrite(&blue_byte,sizeof(unsigned char),1,zipped);
-
+	
+	block_rgb(previous_pixel_value,zipped,block_rgb_bit);
 	unsigned char index;
 	index=(3*red(previous_pixel_value)+5*green(previous_pixel_value)+7*blue(previous_pixel_value))%64;
 	cache[index]=previous_pixel_value;//saving the first pixel value in the cache
@@ -160,7 +173,7 @@ void zip(char **path){
             		block_diff(diff_red,diff_green,diff_blue,zipped);    
         	}		
 		//block_luma
-        else if(diff_green>=(-32) && diff_green<=31 && diff_red-diff_green >= (-8) && diff_red-diff_green <=7 && diff_blue-diff_green >= (-8) && diff_blue-diff_green<=7){
+        else if (diff_green>=(-32) && diff_green<=31 && diff_red-diff_green >= (-8) && diff_red-diff_green <=7 && diff_blue-diff_green >= (-8) && diff_blue-diff_green<=7){
 	        block_luma(diff_red,diff_green,diff_blue,zipped);
         	}
 		//block_rgb
@@ -175,6 +188,76 @@ void zip(char **path){
 	percent = (1.0*i*width + j)/(width*height) + 0.005;
 	prog_bar(percent);
 	}
+}
+else{
+int i,j;
+	int* pj;
+	pj=&j;
+	int previous_pixel_value, pixel_value;
+	int cache[64]={0};
+	unsigned char block_rgb_bit=significant_bit_rgb;
+	previous_pixel_value=ppmRead(img_entree,0,0);//get the value of the first pixel
+	//get every color component of the first pixel
+	block_rgb_grey(previous_pixel_value,zipped,block_rgb_bit);
+	
+	
+unsigned char index;
+int grey=blue(previous_pixel_value);
+int previous_grey;
+	index=(3*red(previous_pixel_value)+5*green(previous_pixel_value)+7*grey)%64;//calculate index of the pixel value
+	cache[index]=previous_pixel_value;//saving the first pixel value in the cache
+
+	unsigned char diff_grey;
+	
+	float percent;
+	for (i=0;i<height;i++){
+		for (j=0;j<width;j++){
+	
+			if (i==0 && j==0){
+				j++;	
+			}
+		
+		pixel_value=ppmRead(img_entree,j,i);//get the current pixel value
+		grey=blue(pixel_value);
+		
+		index=(3*red(pixel_value)+5*green(pixel_value)+7*grey)%64;//calculate index of the pixel value
+		previous_grey=blue(previous_pixel_value);
+		//calculate diff
+		diff_grey=grey-previous_grey;
+        
+		
+		//block_same
+		if(previous_pixel_value==pixel_value){
+        		block_same(i,pj,pixel_value,previous_pixel_value,width,img_entree,zipped);
+       		}
+		//block_index
+		else if(cache[index]==pixel_value){
+			block_index(index,zipped);
+		}
+		//block_diff 
+		else if( diff_grey>=(-2) && diff_grey<=1 ){
+            		block_diff_grey(diff_grey,zipped);    
+        	}		
+		//block_luma
+        else if(diff_grey>=(-32) && diff_grey<=31){
+	        block_luma_grey(diff_grey,zipped);
+        	}
+		//block_rgb
+        else{
+            block_rgb_grey(pixel_value,zipped,block_rgb_bit);
+        	}
+		//index save
+		cache[index]=pixel_value;
+		previous_pixel_value=ppmRead(img_entree,j,i);
+		}
+	//display a progress bar
+	percent = (1.0*i*width + j)/(width*height) + 0.005;
+	prog_bar(percent);
+	}
+}
+
+
+
 printf("zip created\n");
 compar(path);
 fclose(zipped);	
