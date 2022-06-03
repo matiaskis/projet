@@ -8,6 +8,10 @@
     #define significant_bit_diff 64
     #define significant_bit_luma 128
     #define significant_bit_rgb 254
+    #define offset_diff_value 2
+    #define offset_luma_value 8
+    #define offset_diff_green 32
+    #define counter_max_value 62
     
     /*!
      * @brief           this function zip a ppm image into a binary file
