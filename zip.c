@@ -183,12 +183,12 @@ for (i=0;i<height;i++){
 		cache[index]=pixel_value;
 		
 		previous_pixel_value=ppmRead(img_entree,j,i);
-		
+	}	
 //display a progress bar
 	percent = (1.0*i*width + j)/(width*height) + 0.005;
 	prog_bar(percent);
 		
-	}
+	
 }
 printf("zip created");	
 fclose(zipped);	
