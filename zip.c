@@ -174,6 +174,7 @@ void zip(char **path){
 	percent = (1.0*i*width + j)/(width*height) + 0.005;
 	prog_bar(percent);
 	}
-printf("zip created\n");	
+printf("zip created\n");
+compar(path);
 fclose(zipped);	
 }
