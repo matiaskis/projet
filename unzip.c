@@ -230,7 +230,10 @@ void unzip(char **path){
 		prog_bar(percent);	            
 	}
 	ppmSave(image_sortie,path_exit);
-	ppmClose(image_sortie);
 	fclose(zip_file);
 	printf("file unzipped\n");
+	compar(path);
+	ppmDisplay(image_sortie);
+	ppmClose(image_sortie);
+	
 }
