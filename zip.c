@@ -1,6 +1,7 @@
 #include "ppm_lib.h"
 #include "zip.h"
 #include "prog_bar.h"
+#include "compar.h"
 
 //write the width,height,range,nbcolor
 void param_zipped_writing(int width, int height,unsigned char range, unsigned char nbColors,FILE* zipped){
