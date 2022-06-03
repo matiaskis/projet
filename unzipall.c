@@ -367,3 +367,4 @@ else{
 	ppmClose(image_sortie);
 	
 }
+}
