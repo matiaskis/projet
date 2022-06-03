@@ -3,6 +3,15 @@
     #include<stdio.h>
     #include"ppm_lib.h"
     
+    #define significant_bit_same 192
+    #define significant_bit_diff 64
+    #define significant_bit_luma 128
+    #define significant_bit_rgb 254
+    #define counter_increment 1
+    #define offset_diff_value 2
+    #define offset_luma_value 8
+    #define offset_diff_green 32
+   
     /*!
      * @brief                       this function unzip a binary zipped file into a ppm image
      * @param path                  relative path to the image file to open
