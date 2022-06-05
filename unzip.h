@@ -13,6 +13,7 @@
     #define offset_diff_value 2
     #define offset_luma_value 8
     #define offset_diff_green 32
+    #define offset_diff_grey 32
    
     /*!
      * @brief                       this function unzip a binary zipped file into a ppm image
