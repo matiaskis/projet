@@ -71,7 +71,7 @@ void block_luma(unsigned char diff_red,unsigned char diff_green,unsigned char di
     
     
 void block_luma_grey(unsigned char diff_grey,FILE *zipped){
-diff_grey=significant_bit_luma+diff_grey+offset_diff_green;
+diff_grey=significant_bit_luma+diff_grey+offset_diff_grey;
 fwrite(&diff_grey,sizeof(unsigned char),1,zipped);
 }
 
