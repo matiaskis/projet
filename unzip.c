@@ -358,6 +358,7 @@ else{
 	
 	
   }
+	//operation relative to save the ppm/pgm image
 	ppmSave(zipped,path_exit);
 	fclose(zip_file);
 	printf("file unzipped\n");
