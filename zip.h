@@ -85,13 +85,6 @@
      */
 	void param_zipped_writing(int width, int height,unsigned char range, unsigned char nbColors,FILE* zipped);
 
-	/*!
-     * @brief               		this function display a progression bar 
-     * @param percent   		float value : percentage of the pixel traited 
-     * @return            		nothing
-     */
-	int prog_bar(float percent);
-
     /*!
      * @brief               this function is used in the case of zipping a pgm img it write a "rgb block" and the value of the 3 colors value in one block 
      *			    instead of three for a ppm img, since the color value are all the same
