@@ -11,7 +11,7 @@ int main(int argc, char ** argv){
     zip(argv);
   }
   else{
-unzip(argv);
+      unzip(argv);
   }
   time_end=get_time();
   execution_time(time_start,time_end);
