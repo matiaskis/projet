@@ -15,3 +15,5 @@ exemple unzip : ./exec random_directory/image.zip random_directory/image_out.ppm
 
 after that you will be asked if you want to zip or unzip or cancel, as it is writted you just have to type 1,2 or 3 depend on the action you want to do.
 same thing with the confirmation.(type y or n)
+
+(if it say Error segmentation (core dumped) you wrote a wrong path)
