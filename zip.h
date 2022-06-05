@@ -13,6 +13,7 @@
     #define offset_luma_value 8
     #define offset_diff_green 32
     #define counter_max_value 62
+    #define offset_diff_grey 32
     
     /*!
      * @brief           this function zip a ppm image into a binary file
