@@ -173,7 +173,7 @@ int read_diff_block_pgm(unsigned char byte,int previous_pixel_value,int i,int j,
 int read_luma_block_pgm(FILE *zip_file,unsigned char byte,int i,int j,PPM_IMG* zipped,int previous_pixel_value){
 	unsigned char diff_grey;
 	byte=byte-significant_bit_luma;
-	diff_grey=byte-offset_diff_grey;//offset of diff green and grey is similar
+	diff_grey=byte-offset_diff_green;//offset of diff green and grey is similar
     	unsigned char grey;
 	grey=blue(previous_pixel_value)+diff_grey;
 	
