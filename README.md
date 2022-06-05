@@ -4,7 +4,7 @@ the image.
 
 To make it work you have to add in argument when you run it, the path of the file you want to zip/unzip and the path of the zipped/unzipped file.
 
-you have to be in the directory where the program is and the random_directory where is saved your ppm image have to be in there to
+you have to be in the directory where the program is and the random_directory where your ppm image is saved have to be in there to
 
 first of all you type : make                                                         // to compile the program with the makefile
 
