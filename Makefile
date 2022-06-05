@@ -1,5 +1,5 @@
 all: exec
-main.o:main.c zip.h unzip.h choose.h time.h compar.h
+main.o:main.c zip.h unzip.h choose.h time.h 
 	gcc -c main.c -o main.o
 zip.o:zip.c zip.h ppm_lib.h prog_bar.h compar.h
 	gcc -c zip.c -o zip.o
