@@ -2,7 +2,7 @@
 #include"prog_bar.h"
 
 // percent float value between 0 and 1 both included
-int prog_bar(float percent){
+void prog_bar(float percent){
     int i;
     int L = 40;
     int N = (int)(percent*L);
