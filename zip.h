@@ -85,14 +85,43 @@
      */
 	void param_zipped_writing(int width, int height,unsigned char range, unsigned char nbColors,FILE* zipped);
 
-	 /*!
+	/*!
      * @brief               		this function display a progression bar 
-     * @param percent   			float value : percentage of the pixel traited 
-     * @return            			nothing
+     * @param percent   		float value : percentage of the pixel traited 
+     * @return            		nothing
      */
 	int prog_bar(float percent);
+
+    /*!
+     * @brief               this function is used in the case of zipping a pgm img it write a "rgb block" and the value of the 3 colors value in one block 
+     *			    instead of three for a ppm img, since the color value are all the same
+     * @param pixel_value   integer value of the current pixel
+     * @param block_rgb_bit unsigned char which is the significant bits of the eva_block_rgb
+     * @param zipped        pointer of the created zipped file
+     * @return              nothing
+     */
+    void block_rgb_grey(int pixel_value,FILE *zipped,unsigned char block_rgb_bit);
+
+    /*!
+     * @brief                       function used to zip a pgm img it write one block intead of two with difference between the previous pixel and the current
+     *				    pixel grey value 
+     * @param diff_grey             difference between the previous pixel red component and the current pixel red component          
+     * @param diff_green            difference between the previous pixel green component and the current pixel green component      
+     * @param diff_blue             difference between the previous pixel blue component and the current pixel blue component
+     * @param zipped                pointer of the created zipped file
+     * @return                      nothing
+     */
+    void block_luma_grey(unsigned char diff_grey,FILE *zipped);
+
+     /*!
+     * @brief                       this function used to zip a pgm img calculate the difference of one color between the previous pixel value and the current pixel value 
+     *                              and write a "eva_block_diff" in the zipped file
+     * @param diff_red              difference between the previous pixel red component and the current pixel red component          
+     * @param zipped                pointer of the created zipped file
+     * @return                      nothing
+     */
+     void block_diff_grey(unsigned char diff_grey,FILE *zipped);
 	
-	void block_rgb_grey(int pixel_value,FILE *zipped,unsigned char block_rgb_bit);
-	void block_luma_grey(unsigned char diff_grey,FILE *zipped);
-	void block_diff_grey(unsigned char diff_grey,FILE *zipped);
+	
+	
 #endif
